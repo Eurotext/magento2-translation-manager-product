@@ -1,0 +1,12 @@
+{
+    "name": "eurotext/ext.magento2.eurotext.translation-manager",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Matthias Walter",
+            "email": "matthias.walter@mwltr.de"
+        }
+    ],
+    "require": {}
+}
