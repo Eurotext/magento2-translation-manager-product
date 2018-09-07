@@ -8,5 +8,13 @@
             "email": "matthias.walter@mwltr.de"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "~7.0.0|~7.1.0",
+        "eurotext/magento2-translation-manager-product": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Eurotext\\TranslationManagerProduct\\": "src"
+        }
+    }
 }
