@@ -1,5 +1,5 @@
 {
-    "name": "eurotext/ext.magento2.eurotext.translation-manager-product",
+    "name": "eurotext/magento2-translation-manager-product",
     "type": "magento2-module",
     "license": "proprietary",
     "authors": [
