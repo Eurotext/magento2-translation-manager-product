@@ -9,12 +9,11 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Sender;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1ApiInterface;
-use Eurotext\RestApiClient\Request\Data\Project\ItemData;
-use Eurotext\RestApiClient\Request\Project\ItemDataRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\EntitySenderInterface;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
+use Eurotext\TranslationManagerProduct\Mapper\ProductItemPostMapper;
 use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -45,41 +44,34 @@ class ProductSender implements EntitySenderInterface
     private $productRepository;
 
     /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    const CONFIG_PATH_LOCALE_CODE = 'general/locale/code';
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var ProductItemPostMapper
+     */
+    private $itemPostMapper;
 
     public function __construct(
         ItemV1ApiInterface $itemApi,
         ProjectProductRepositoryInterface $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ProductRepositoryInterface $productRepository,
-        ScopeConfigInterface $scopeConfig,
+        ProductItemPostMapper $itemPostMapper,
         LoggerInterface $logger
     ) {
         $this->projectProductRepository = $projectProductRepository;
         $this->searchCriteriaBuilder    = $searchCriteriaBuilder;
         $this->itemApi                  = $itemApi;
         $this->productRepository        = $productRepository;
-        $this->scopeConfig              = $scopeConfig;
+        $this->itemPostMapper           = $itemPostMapper;
         $this->logger                   = $logger;
     }
 
     public function send(ProjectInterface $project): bool
     {
-        $projectId     = $project->getId();
-        $scopeCodeSrc  = $project->getStoreviewSrc();
-        $scopeCodeDest = $project->getStoreviewDst();
-
-        $languageSrc  = $this->scopeConfig->getValue(self::CONFIG_PATH_LOCALE_CODE, 'stores', $scopeCodeSrc);
-        $languageDest = $this->scopeConfig->getValue(self::CONFIG_PATH_LOCALE_CODE, 'stores', $scopeCodeDest);
+        $projectId = $project->getId();
 
         $this->logger->info(sprintf('send project products project-id:%d', $projectId));
 
@@ -96,20 +88,7 @@ class ProductSender implements EntitySenderInterface
 
             $product = $this->productRepository->getById($productId);
 
-            $data = [
-                'name' => $product->getName(),
-                // @todo get attributes to map
-            ];
-            $meta = [
-                'item_id'   => $product->getId(),
-                'entity_id' => $product->getId(),
-            ];
-
-            $itemData = new ItemData($data, $meta);
-
-            $itemRequest = new ItemDataRequest(
-                $projectId, $languageSrc, $languageDest, 'product', '', $itemData
-            );
+            $itemRequest = $this->itemPostMapper->map($product, $project);
 
             try {
                 $response = $this->itemApi->post($itemRequest);
