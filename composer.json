@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "php": "~7.0.0|~7.1.0",
-        "eurotext/magento2-translation-manager": "*"
+        "php": "~7.0.0|~7.1.0"
     },
     "autoload": {
         "files": [
