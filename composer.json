@@ -1,6 +1,7 @@
 {
     "name": "eurotext/magento2-translation-manager-product",
     "type": "magento2-module",
+    "description": "Eurotext Translation Manager Product Extension",
     "license": "proprietary",
     "authors": [
         {
@@ -10,9 +11,12 @@
     ],
     "require": {
         "php": "~7.0.0|~7.1.0",
-        "eurotext/magento2-translation-manager-product": "*"
+        "eurotext/magento2-translation-manager": "*"
     },
     "autoload": {
+        "files": [
+            "registration.php"
+        ],
         "psr-4": {
             "Eurotext\\TranslationManagerProduct\\": "src"
         }

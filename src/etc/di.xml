@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface"
+                type="Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository" />
+
+    <type name="Eurotext\TranslationManager\Seeder\EntitySeederPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Seeder\ProductSeeder</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Sender\EntitySenderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Sender\ProductSender</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Receiver\EntityReceiverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Receiver\ProductReceiver</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityTypePool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Entity\ProductEntityType</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
