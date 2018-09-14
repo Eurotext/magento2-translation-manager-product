@@ -13,9 +13,9 @@ use Eurotext\RestApiClient\Request\Data\Project\ItemData;
 use Eurotext\RestApiClient\Request\Project\ItemDataRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\EntitySenderInterface;
-use Eurotext\TranslationManager\Setup\EntitySchema\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
+use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -101,7 +101,7 @@ class ProductSender implements EntitySenderInterface
                 // @todo get attributes to map
             ];
             $meta = [
-                'item_id' => $product->getId(),
+                'item_id'   => $product->getId(),
                 'entity_id' => $product->getId(),
             ];
 

@@ -10,8 +10,8 @@ namespace Eurotext\TranslationManagerProduct\Seeder;
 
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\EntitySeederInterface;
-use Eurotext\TranslationManager\Model\ProjectProductFactory;
-use Eurotext\TranslationManager\Setup\EntitySchema\ProjectProductSchema;
+use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
+use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;

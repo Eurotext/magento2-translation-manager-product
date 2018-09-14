@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Repository\Service;
 
-use Eurotext\TranslationManager\Model\ResourceModel\ProjectProductCollectionFactory;
+use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductCollectionFactory;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
 
 class GetProjectProductListService extends AbstractGetListService

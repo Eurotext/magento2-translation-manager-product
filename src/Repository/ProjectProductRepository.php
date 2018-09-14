@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Repository;
 
-use Eurotext\TranslationManager\Model\ProjectProductFactory;
-use Eurotext\TranslationManager\Repository\Service\GetProjectProductListService;
+use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
+use Eurotext\TranslationManagerProduct\Repository\Service\GetProjectProductListService;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
