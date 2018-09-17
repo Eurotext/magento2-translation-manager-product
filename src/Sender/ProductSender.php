@@ -18,7 +18,6 @@ use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Psr\Log\LoggerInterface;
 
 class ProductSender implements EntitySenderInterface
@@ -84,6 +83,12 @@ class ProductSender implements EntitySenderInterface
 
         foreach ($projectProducts as $projectProduct) {
             /** @var $projectProduct ProjectProductInterface */
+
+            // Skip already transferred products
+            if ($projectProduct->getExtId() > 0) {
+                continue;
+            }
+
             $productId = $projectProduct->getProductId();
 
             $product = $this->productRepository->getById($productId);
