@@ -58,7 +58,7 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function testItShouldSeedProjectProducts()
+    public function testItShouldSendProjectProducts()
     {
         $productId = 10;
         $name      = __CLASS__ . '-product-sender';
@@ -76,7 +76,7 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
 
         $extId = $projectProduct->getExtId();
 
-        $this->assertNotEmpty($extId);
+        $this->assertGreaterThan(0, $extId);
 
     }
 
