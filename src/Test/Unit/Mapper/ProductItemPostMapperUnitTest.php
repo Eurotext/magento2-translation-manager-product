@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Test\Unit\Mapper;
 
-use Eurotext\RestApiClient\Request\Project\ItemDataRequest;
+use Eurotext\RestApiClient\Request\Project\ItemPostRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\ScopeConfigReaderInterface;
 use Eurotext\TranslationManagerProduct\Mapper\ProductItemPostMapper;
@@ -103,7 +103,7 @@ class ProductItemPostMapperUnitTest extends UnitTestAbstract
         $request = $this->sut->map($product, $project);
 
         // ASSERT
-        $this->assertInstanceOf(ItemDataRequest::class, $request);
+        $this->assertInstanceOf(ItemPostRequest::class, $request);
 
         $this->assertEquals($projectId, $request->getProjectId());
         $this->assertEquals($langSrc, $request->getSource());

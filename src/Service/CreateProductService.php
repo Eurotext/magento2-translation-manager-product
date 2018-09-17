@@ -10,7 +10,7 @@ namespace Eurotext\TranslationManagerProduct\Service;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1ApiInterface;
 use Eurotext\RestApiClient\Request\Data\Project\ItemData;
-use Eurotext\RestApiClient\Request\Project\ItemDataRequest;
+use Eurotext\RestApiClient\Request\Project\ItemPostRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManagerProduct\Entity\ProductEntityType;
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -64,13 +64,13 @@ class CreateProductService
 
         $itemData = new ItemData($originalString, $meta);
 
-        // ItemDataRequest
+        // ItemPostRequest
         $source       = 'en-us'; // @todo get from Project
         $target       = 'de-de'; // @todo get from Project
         $textType     = ProductEntityType::CODE;
         $systemModule = 'Magento'; // @todo where do we get this from? does this need to be defined here?
 
-        $itemDataRequest = new ItemDataRequest($extId, $source, $target, $textType, $systemModule, $itemData);
+        $itemDataRequest = new ItemPostRequest($extId, $source, $target, $textType, $systemModule, $itemData);
 
         // Send Request
         $this->itemV1Api->post($itemDataRequest);

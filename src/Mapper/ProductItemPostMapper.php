@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Mapper;
 
 use Eurotext\RestApiClient\Request\Data\Project\ItemData;
-use Eurotext\RestApiClient\Request\Project\ItemDataRequest;
+use Eurotext\RestApiClient\Request\Project\ItemPostRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\ScopeConfigReaderInterface;
 use Eurotext\TranslationManagerProduct\ScopeConfig\ProductScopeConfigReader;
@@ -37,7 +37,7 @@ class ProductItemPostMapper
         $this->productScopeConfig = $productScopeConfig;
     }
 
-    public function map(ProductInterface $product, ProjectInterface $project): ItemDataRequest
+    public function map(ProductInterface $product, ProjectInterface $project): ItemPostRequest
     {
         $languageSrc  = $this->scopeConfig->getLocaleForStore($project->getStoreviewSrc());
         $languageDest = $this->scopeConfig->getLocaleForStore($project->getStoreviewDst());
@@ -66,7 +66,7 @@ class ProductItemPostMapper
 
         $itemData = new ItemData($data, $meta);
 
-        $itemRequest = new ItemDataRequest(
+        $itemRequest = new ItemPostRequest(
             $project->getExtId(),
             $languageSrc,
             $languageDest,
