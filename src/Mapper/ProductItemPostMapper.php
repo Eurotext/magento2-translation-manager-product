@@ -39,8 +39,6 @@ class ProductItemPostMapper
 
     public function map(ProductInterface $product, ProjectInterface $project): ItemDataRequest
     {
-        $projectId = $project->getId();
-
         $languageSrc  = $this->scopeConfig->getLocaleForStore($project->getStoreviewSrc());
         $languageDest = $this->scopeConfig->getLocaleForStore($project->getStoreviewDst());
 
@@ -69,7 +67,7 @@ class ProductItemPostMapper
         $itemData = new ItemData($data, $meta);
 
         $itemRequest = new ItemDataRequest(
-            $projectId,
+            $project->getExtId(),
             $languageSrc,
             $languageDest,
             self::ENTITY_TYPE,
