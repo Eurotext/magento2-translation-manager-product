@@ -6,8 +6,9 @@ namespace Eurotext\TranslationManagerProduct\Mapper;
 use Eurotext\RestApiClient\Request\Data\Project\ItemData;
 use Eurotext\RestApiClient\Request\Project\ItemDataRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
+use Eurotext\TranslationManager\Api\ScopeConfigReaderInterface;
+use Eurotext\TranslationManagerProduct\ScopeConfig\ProductScopeConfigReader;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * @copyright see PROJECT_LICENSE.txt
@@ -16,35 +17,53 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
  */
 class ProductItemPostMapper
 {
-    const CONFIG_PATH_LOCALE_CODE = 'general/locale/code';
+    const ENTITY_TYPE = 'product';
 
     /**
-     * @var ScopeConfigInterface
+     * @var ScopeConfigReaderInterface
      */
     private $scopeConfig;
 
-    public function __construct(ScopeConfigInterface $scopeConfig)
-    {
-        $this->scopeConfig = $scopeConfig;
+    /**
+     * @var ProductScopeConfigReader
+     */
+    private $productScopeConfig;
+
+    public function __construct(
+        ScopeConfigReaderInterface $scopeConfigReader,
+        ProductScopeConfigReader $productScopeConfig
+    ) {
+        $this->scopeConfig        = $scopeConfigReader;
+        $this->productScopeConfig = $productScopeConfig;
     }
 
     public function map(ProductInterface $product, ProjectInterface $project): ItemDataRequest
     {
-        $projectId     = $project->getId();
-        $scopeCodeSrc  = $project->getStoreviewSrc();
-        $scopeCodeDest = $project->getStoreviewDst();
+        $projectId = $project->getId();
 
-        // @todo refactor this to Eurotext\TranslationManagerProduct\System\ScopeConfig
-        $languageSrc  = $this->scopeConfig->getValue(self::CONFIG_PATH_LOCALE_CODE, 'stores', $scopeCodeSrc);
-        $languageDest = $this->scopeConfig->getValue(self::CONFIG_PATH_LOCALE_CODE, 'stores', $scopeCodeDest);
+        $languageSrc  = $this->scopeConfig->getLocaleForStore($project->getStoreviewSrc());
+        $languageDest = $this->scopeConfig->getLocaleForStore($project->getStoreviewDst());
+
+        $attributesEnabled = $this->productScopeConfig->getAttributesEnabled();
 
         $data = [
             'name' => $product->getName(),
-            // @todo get attributes to map
         ];
+
+        foreach ($attributesEnabled as $attributeCode) {
+            $customAttribute = $product->getCustomAttribute($attributeCode);
+
+            if ($customAttribute === null) {
+                continue;
+            }
+
+            $data[$attributeCode] = $customAttribute->getValue();
+        }
+
         $meta = [
-            'item_id'   => $product->getId(),
-            'entity_id' => $product->getId(),
+            'item_id'     => $product->getId(),
+            'entity_id'   => $product->getId(),
+            'entity_type' => self::ENTITY_TYPE,
         ];
 
         $itemData = new ItemData($data, $meta);
@@ -53,7 +72,7 @@ class ProductItemPostMapper
             $projectId,
             $languageSrc,
             $languageDest,
-            'product',
+            self::ENTITY_TYPE,
             '',
             $itemData
         );
