@@ -103,6 +103,7 @@ class ProductSender implements EntitySenderInterface
                 // save project_product ext_id
                 $extId = $response->getId();
                 $projectProduct->setExtId($extId);
+                $projectProduct->setStatus(ProjectProductInterface::STATUS_EXPORTED);
 
                 $this->projectProductRepository->save($projectProduct);
 
