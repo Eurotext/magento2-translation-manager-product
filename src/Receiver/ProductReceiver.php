@@ -81,6 +81,9 @@ class ProductReceiver implements EntityReceiverInterface
 
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::EXT_ID, 0, 'gt');
+        $this->searchCriteriaBuilder->addFilter(
+            ProjectProductSchema::STATUS, ProjectProductInterface::STATUS_IMPORTED, 'neq'
+        );
         $searchCriteria = $this->searchCriteriaBuilder->create();
 
         $searchResult = $this->projectProductRepository->getList($searchCriteria);
@@ -103,7 +106,8 @@ class ProductReceiver implements EntityReceiverInterface
 
                 $this->productRepository->save($product);
 
-                // @todo set status to imported
+                $projectProduct->setStatus(ProjectProductInterface::STATUS_IMPORTED);
+
                 $this->projectProductRepository->save($projectProduct);
 
                 $this->logger->info(sprintf('product id:%d, ext-id:%d => success', $productId, $itemExtId));
