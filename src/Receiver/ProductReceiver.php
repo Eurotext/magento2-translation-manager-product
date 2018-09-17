@@ -14,12 +14,11 @@ use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\EntityReceiverInterface;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
-use Eurotext\TranslationManagerProduct\ScopeConfig\ProductScopeConfigReader;
+use Eurotext\TranslationManagerProduct\Mapper\ProductItemGetMapper;
 use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
 class ProductReceiver implements EntityReceiverInterface
@@ -50,28 +49,23 @@ class ProductReceiver implements EntityReceiverInterface
     private $logger;
 
     /**
-     * @var StoreManagerInterface
+     * @var ProductItemGetMapper
      */
-    private $storeManager;
-
-    /**
-     * @var ProductScopeConfigReader
-     */
-    private $productScopeConfig;
+    private $productItemGetMapper;
 
     public function __construct(
         ItemV1ApiInterface $itemApi,
         ProjectProductRepositoryInterface $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         ProductRepositoryInterface $productRepository,
-        ProductScopeConfigReader $productScopeConfig,
+        ProductItemGetMapper $productItemGetMapper,
         LoggerInterface $logger
     ) {
         $this->projectProductRepository = $projectProductRepository;
         $this->searchCriteriaBuilder    = $searchCriteriaBuilder;
         $this->itemApi                  = $itemApi;
         $this->productRepository        = $productRepository;
-        $this->productScopeConfig       = $productScopeConfig;
+        $this->productItemGetMapper     = $productItemGetMapper;
         $this->logger                   = $logger;
     }
 
@@ -105,30 +99,7 @@ class ProductReceiver implements EntityReceiverInterface
 
                 $itemGetResponse = $this->itemApi->get($itemRequest);
 
-                $item = $itemGetResponse->getItemData();
-
-                // @todo refactor mapping to a processor class
-                $product->setName($item->getDataValue('name'));
-
-                $attributesEnabled = $this->productScopeConfig->getAttributesEnabled();
-                foreach ($attributesEnabled as $attributeCode) {
-                    $customAttribute = $product->getCustomAttribute($attributeCode);
-
-                    if ($customAttribute === null) {
-                        // missing custom attribute, maybe due to not being set at the global product,
-                        // or the attribute has been removed but still is configured in the system.xml
-                        continue;
-                    }
-
-                    $newValue = $item->getDataValue($attributeCode);
-
-                    if (empty($newValue)) {
-                        // If there is no translated value do not set it
-                        continue;
-                    }
-
-                    $customAttribute->setValue($newValue);
-                }
+                $this->productItemGetMapper->map($itemGetResponse, $product);
 
                 $this->productRepository->save($product);
 
@@ -150,4 +121,5 @@ class ProductReceiver implements EntityReceiverInterface
 
         return $result;
     }
+
 }
