@@ -7,10 +7,10 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <eurotext>
+        <eurotext_translationmanager>
             <product>
                 <attributes_enabled>name,description,short_description</attributes_enabled>
             </product>
-        </eurotext>
+        </eurotext_translationmanager>
     </default>
 </config>
