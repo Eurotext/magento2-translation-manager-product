@@ -16,6 +16,6 @@ class ProductReceiver implements EntityReceiverInterface
 
     public function receive(ProjectInterface $project): bool
     {
-
+        return true;
     }
 }
