@@ -103,7 +103,7 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
         $resultSend = $this->productSender->send($project);
         $this->assertTrue($resultSend);
 
-        // @todo trigger /api/v1/project/translate/{project}.json
+        // trigger translation progress
         $this->projectApi->translate($project->getExtId());
 
         // Receive Project from Eurotext
