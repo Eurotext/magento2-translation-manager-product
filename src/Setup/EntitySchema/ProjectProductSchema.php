@@ -12,10 +12,11 @@ class ProjectProductSchema
 {
     const TABLE_NAME = 'eurotext_project_products';
 
-    const ID = 'id';
-    const EXT_ID = 'ext_id';
+    const ID         = 'id';
+    const EXT_ID     = 'ext_id';
     const PROJECT_ID = 'project_id';
     const PRODUCT_ID = 'product_id';
+    const STATUS     = 'status';
     const LAST_ERROR = 'last_error';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';

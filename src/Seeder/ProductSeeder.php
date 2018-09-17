@@ -96,6 +96,7 @@ class ProductSeeder implements EntitySeederInterface
             $projectProduct = $this->projectProductFactory->create();
             $projectProduct->setProjectId($projectId);
             $projectProduct->setProductId($productId);
+            $projectProduct->setStatus(ProjectProductInterface::STATUS_NEW);
 
             try {
                 $this->projectProductRepository->save($projectProduct);

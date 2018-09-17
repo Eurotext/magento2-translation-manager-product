@@ -5,6 +5,8 @@ namespace Eurotext\TranslationManagerProduct\Api\Data;
 
 interface ProjectProductInterface
 {
+    const STATUS_NEW = 'new';
+
     public function getId();
 
     public function getProjectId(): int;
@@ -12,6 +14,8 @@ interface ProjectProductInterface
     public function getProductId(): int;
 
     public function getExtId(): int;
+
+    public function getStatus(): string;
 
     public function getCreatedAt(): string;
 
@@ -24,6 +28,8 @@ interface ProjectProductInterface
     public function setProductId(int $productId);
 
     public function setExtId(int $extId);
+
+    public function setStatus(string $status);
 
     public function setCreatedAt(string $createdAt);
 

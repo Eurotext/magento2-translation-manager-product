@@ -54,6 +54,13 @@ class CreateProjectProductSchema
             'Product ID'
         );
         $table->addColumn(
+            ProjectProductSchema::STATUS,
+            DbDdlTable::TYPE_TEXT,
+            20,
+            ['nullable' => false],
+            'Status'
+        );
+        $table->addColumn(
             ProjectProductSchema::LAST_ERROR,
             DbDdlTable::TYPE_TEXT,
             null,

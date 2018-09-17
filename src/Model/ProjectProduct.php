@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Model;
 
-use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductCollection;
 use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductResource;
+use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Model\AbstractModel;
 
@@ -29,7 +29,7 @@ class ProjectProduct
 
     public function getProjectId(): int
     {
-        return (int) $this->getData(ProjectProductSchema::PROJECT_ID) ?: 0;
+        return (int)$this->getData(ProjectProductSchema::PROJECT_ID) ?: 0;
     }
 
     public function setProjectId(int $projectId)
@@ -39,7 +39,7 @@ class ProjectProduct
 
     public function getProductId(): int
     {
-        return (int) $this->getData(ProjectProductSchema::PRODUCT_ID) ?: 0;
+        return (int)$this->getData(ProjectProductSchema::PRODUCT_ID) ?: 0;
     }
 
     public function setProductId(int $productId)
@@ -49,12 +49,22 @@ class ProjectProduct
 
     public function getExtId(): int
     {
-        return (int) $this->getData(ProjectProductSchema::EXT_ID) ?: 0;
+        return (int)$this->getData(ProjectProductSchema::EXT_ID) ?: 0;
     }
 
     public function setExtId(int $extId)
     {
         $this->setData(ProjectProductSchema::EXT_ID, $extId);
+    }
+
+    public function getStatus(): string
+    {
+        return $this->getData(ProjectProductSchema::STATUS) ?: '';
+    }
+
+    public function setStatus(string $status)
+    {
+        $this->setData(ProjectProductSchema::STATUS, $status);
     }
 
     public function getCreatedAt(): string
