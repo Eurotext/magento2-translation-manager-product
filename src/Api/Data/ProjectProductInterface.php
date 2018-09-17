@@ -6,6 +6,7 @@ namespace Eurotext\TranslationManagerProduct\Api\Data;
 interface ProjectProductInterface
 {
     const STATUS_NEW = 'new';
+    const STATUS_EXPORTED = 'exported';
     const STATUS_IMPORTED = 'imported';
 
     public function getId();
