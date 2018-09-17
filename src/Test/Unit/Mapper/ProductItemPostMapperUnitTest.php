@@ -86,7 +86,7 @@ class ProductItemPostMapperUnitTest extends UnitTestAbstract
         // Mock Project
         /** @var ProjectInterface|\PHPUnit_Framework_MockObject_MockObject $project */
         $project = $this->getMockBuilder(ProjectInterface::class)->getMockForAbstractClass();
-        $project->expects($this->once())->method('getId')->willReturn($projectId);
+        $project->expects($this->once())->method('getExtId')->willReturn($projectId);
         $project->expects($this->once())->method('getStoreviewSrc')->willReturn($storeViewSrc);
         $project->expects($this->once())->method('getStoreviewDst')->willReturn($storeViewDst);
 
