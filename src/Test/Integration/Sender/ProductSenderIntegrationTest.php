@@ -9,6 +9,8 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1Api;
+use Eurotext\RestApiClient\Api\ProjectV1Api;
+use Eurotext\TranslationManager\Service\Project\CreateProjectService;
 use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
@@ -30,6 +32,9 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
     /** @var ProjectProvider */
     private $projectProvider;
 
+    /** @var CreateProjectService */
+    private $createProject;
+
     protected function setUp()
     {
         parent::setUp();
@@ -44,6 +49,13 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
             [
                 'itemApi' => $itemApi,
             ]
+        );
+
+        $projectApi = new ProjectV1Api($config);
+
+        $this->createProject = $this->objectManager->create(
+            CreateProjectService::class,
+            ['projectApi' => $projectApi]
         );
 
         $this->projectProvider        = $this->objectManager->get(ProjectProvider::class);
@@ -67,6 +79,9 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
 
         $projectProduct1  = $this->projectProductProvider->createProjectProduct($project->getId(), $productId);
         $projectProductId = $projectProduct1->getId();
+
+        $resultProject = $this->createProject->execute($project);
+        $this->assertTrue($resultProject);
 
         $result = $this->sut->send($project);
 

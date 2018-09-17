@@ -70,6 +70,8 @@ class ProductSender implements EntitySenderInterface
 
     public function send(ProjectInterface $project): bool
     {
+        $result = true;
+
         $projectId = $project->getId();
 
         $this->logger->info(sprintf('send project products project-id:%d', $projectId));
@@ -108,13 +110,15 @@ class ProductSender implements EntitySenderInterface
             } catch (GuzzleException $e) {
                 $message = $e->getMessage();
                 $this->logger->error(sprintf('product id:%d => %s', $productId, $message));
+                $result = false;
             } catch (\Exception $e) {
                 $message = $e->getMessage();
                 $this->logger->error(sprintf('product id:%d => %s', $productId, $message));
+                $result = false;
             }
 
         }
 
-        return true;
+        return $result;
     }
 }
