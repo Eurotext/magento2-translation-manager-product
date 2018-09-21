@@ -77,6 +77,8 @@ class ProductSender implements EntitySenderInterface
         $this->logger->info(sprintf('send project products project-id:%d', $projectId));
 
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
+        $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::EXT_ID, 0);
+        $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::STATUS, ProjectProductInterface::STATUS_NEW);
         $searchCriteria = $this->searchCriteriaBuilder->create();
 
         $searchResult = $this->projectProductRepository->getList($searchCriteria);
