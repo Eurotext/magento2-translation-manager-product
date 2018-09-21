@@ -91,7 +91,7 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
 
         $extId = $projectProduct->getExtId();
 
-        $this->assertGreaterThan(0, $extId);
+        $this->assertGreaterThan(0, $extId, 'The ext_id should be the one from Eurotext');
 
     }
 

@@ -27,18 +27,21 @@ class ProjectProductProvider
     }
 
     /**
+     *
      * @param int $projectId
      * @param int $productId
+     * @param string $status
      *
      * @return \Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface|\Eurotext\TranslationManagerProduct\Model\ProjectProduct
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function createProjectProduct(int $projectId, int $productId)
+    public function createProjectProduct(int $projectId, int $productId, string $status = ProjectProduct::STATUS_NEW)
     {
         /** @var ProjectProduct $object */
         $object = $this->objectManager->create(ProjectProduct::class);
         $object->setProjectId($projectId);
         $object->setProductId($productId);
+        $object->setStatus($status);
 
         return $this->projectProductRepository->save($object);
     }

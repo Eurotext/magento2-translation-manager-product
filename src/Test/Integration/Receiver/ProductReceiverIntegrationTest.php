@@ -14,6 +14,7 @@ use Eurotext\TranslationManager\Service\Project\CreateProjectService;
 use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
+use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
 use Eurotext\TranslationManagerProduct\Receiver\ProductReceiver;
 use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
 use Eurotext\TranslationManagerProduct\Sender\ProductSender;
@@ -113,6 +114,7 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
 
         $projectProduct = $this->projectProductRepository->getById($projectProductId);
         $this->assertGreaterThan(0, $projectProduct->getExtId());
+        $this->assertEquals(ProjectProduct::STATUS_IMPORTED, $projectProduct->getStatus());
     }
 
     public static function loadFixture()
