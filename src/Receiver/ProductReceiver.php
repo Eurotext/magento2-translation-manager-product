@@ -82,7 +82,7 @@ class ProductReceiver implements EntityReceiverInterface
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::EXT_ID, 0, 'gt');
         $this->searchCriteriaBuilder->addFilter(
-            ProjectProductSchema::STATUS, ProjectProductInterface::STATUS_IMPORTED, 'neq'
+            ProjectProductSchema::STATUS, ProjectProductInterface::STATUS_EXPORTED, 'eq'
         );
         $searchCriteria = $this->searchCriteriaBuilder->create();
 
