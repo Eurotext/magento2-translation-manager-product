@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @see LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
+namespace Eurotext\TranslationManagerProduct\Test\Integration\Receiver;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1Api;
 use Eurotext\RestApiClient\Api\ProjectV1Api;
