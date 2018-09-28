@@ -89,6 +89,8 @@ class ProductReceiver implements EntityReceiverInterface
         $projectProducts = $searchResult->getItems();
 
         foreach ($projectProducts as $projectProduct) {
+            $lastError = '';
+
             /** @var $projectProduct ProjectProductInterface */
             $itemExtId = $projectProduct->getExtId();
             $productId = $projectProduct->getProductId();
@@ -104,21 +106,24 @@ class ProductReceiver implements EntityReceiverInterface
 
                 $this->productRepository->save($product);
 
-                $projectProduct->setStatus(ProjectProductInterface::STATUS_IMPORTED);
-
-                $this->projectProductRepository->save($projectProduct);
+                $status = ProjectProductInterface::STATUS_IMPORTED;
 
                 $this->logger->info(sprintf('product id:%d, ext-id:%d => success', $productId, $itemExtId));
             } catch (GuzzleException $e) {
-                $message = $e->getMessage();
-                $this->logger->error(sprintf('product id:%d => %s', $productId, $message));
+                $status    = ProjectProductInterface::STATUS_ERROR;
+                $lastError = $e->getMessage();
+                $this->logger->error(sprintf('product id:%d => %s', $productId, $lastError));
                 $result = false;
             } catch (\Exception $e) {
-                $message = $e->getMessage();
-                $this->logger->error(sprintf('product id:%d => %s', $productId, $message));
+                $status    = ProjectProductInterface::STATUS_ERROR;
+                $lastError = $e->getMessage();
+                $this->logger->error(sprintf('product id:%d => %s', $productId, $lastError));
                 $result = false;
             }
 
+            $projectProduct->setStatus($status);
+            $projectProduct->setLastError($lastError);
+            $this->projectProductRepository->save($projectProduct);
         }
 
         return $result;
