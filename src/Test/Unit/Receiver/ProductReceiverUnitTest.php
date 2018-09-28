@@ -116,16 +116,31 @@ class ProductReceiverUnitTest extends UnitTestAbstract
         $this->assertTrue($result);
     }
 
-    public function testItShouldSetLastErrorToProjectProduct()
+    public function testItShouldSetLastErrorForGuzzleException()
+    {
+        $lastError = 'The Message from the exception that occured';
+        $apiException = new TransferException($lastError);
+
+        $this->runTestExceptionsAreHandledCorrectly($apiException);
+    }
+
+    public function testItShouldSetLastErrorForException()
+    {
+        $lastError = 'The Message from the exception that occured';
+        $apiException = new \Exception($lastError);
+
+        $this->runTestExceptionsAreHandledCorrectly($apiException);
+    }
+
+    private function runTestExceptionsAreHandledCorrectly(\Exception $apiException)
     {
         $status    = ProjectProductInterface::STATUS_ERROR;
-        $lastError = 'The Message from the exception that occured';
 
         $project = $this->projectMockBuilder->buildProjectMock();
 
         $projectProduct = $this->projectProductMockBuilder->buildProjectProductMock();
         $projectProduct->expects($this->once())->method('setStatus')->with($status);
-        $projectProduct->expects($this->once())->method('setLastError')->with($lastError);
+        $projectProduct->expects($this->once())->method('setLastError')->with($apiException->getMessage());
 
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($this->searchResults);
         $this->projectProductRepository->expects($this->once())->method('save')->with($projectProduct);
@@ -135,7 +150,7 @@ class ProductReceiverUnitTest extends UnitTestAbstract
         $product = $this->getMockBuilder(ProductInterface::class)->getMock();
         $this->productRepository->expects($this->once())->method('getById')->willReturn($product);
 
-        $this->itemApi->method('get')->willThrowException(new TransferException($lastError));
+        $this->itemApi->method('get')->willThrowException($apiException);
 
         // Receive Project from Eurotext
         $result = $this->sut->receive($project);
