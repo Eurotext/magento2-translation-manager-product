@@ -19,6 +19,8 @@ use Eurotext\TranslationManagerProduct\Receiver\ProductReceiver;
 use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
 use Eurotext\TranslationManagerProduct\Sender\ProductSender;
 use Eurotext\TranslationManagerProduct\Test\Integration\Provider\ProjectProductProvider;
+use Magento\Framework\App\State;
+use Magento\Framework\Exception\LocalizedException;
 
 class ProductReceiverIntegrationTest extends IntegrationTestAbstract
 {
@@ -106,6 +108,14 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
 
         // trigger translation progress
         $this->projectApi->translate($project->getExtId());
+
+        try {
+            // Set The area code otherwise image resizing will fail
+            /** @var State $appState */
+            $appState = $this->objectManager->get(State::class);
+            $appState->setAreaCode('adminhtml');
+        } catch (LocalizedException $e) {
+        }
 
         // Receive Project from Eurotext
         $result = $this->sut->receive($project);
