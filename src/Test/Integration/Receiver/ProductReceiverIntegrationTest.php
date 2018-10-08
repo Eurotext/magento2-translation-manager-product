@@ -10,6 +10,7 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Receiver;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1Api;
 use Eurotext\RestApiClient\Api\ProjectV1Api;
+use Eurotext\RestApiClient\Request\ProjectTranslateRequest;
 use Eurotext\TranslationManager\Service\Project\CreateProjectService;
 use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
@@ -107,7 +108,7 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
         $this->assertTrue($resultSend);
 
         // trigger translation progress
-        $this->projectApi->translate($project->getExtId());
+        $this->projectApi->translate(new ProjectTranslateRequest($project->getExtId()));
 
         try {
             // Set The area code otherwise image resizing will fail
