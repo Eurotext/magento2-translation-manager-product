@@ -11,7 +11,7 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Receiver;
 use Eurotext\RestApiClient\Api\Project\ItemV1Api;
 use Eurotext\RestApiClient\Api\ProjectV1Api;
 use Eurotext\RestApiClient\Request\ProjectTranslateRequest;
-use Eurotext\TranslationManager\Service\Project\CreateProjectService;
+use Eurotext\TranslationManager\Service\Project\CreateProjectServiceInterface;
 use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
@@ -40,7 +40,7 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
     /** @var ProductSender */
     private $productSender;
 
-    /** @var CreateProjectService */
+    /** @var CreateProjectServiceInterface */
     private $createProject;
 
     /** @var ProjectV1Api */
@@ -65,7 +65,7 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
         $this->projectApi = new ProjectV1Api($config);
 
         $this->createProject = $this->objectManager->create(
-            CreateProjectService::class,
+            CreateProjectServiceInterface::class,
             ['projectApi' => $this->projectApi]
         );
 

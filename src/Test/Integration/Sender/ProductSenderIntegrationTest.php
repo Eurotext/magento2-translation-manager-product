@@ -10,7 +10,7 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1Api;
 use Eurotext\RestApiClient\Api\ProjectV1Api;
-use Eurotext\TranslationManager\Service\Project\CreateProjectService;
+use Eurotext\TranslationManager\Service\Project\CreateProjectServiceInterface;
 use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
@@ -32,7 +32,7 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
     /** @var ProjectProvider */
     private $projectProvider;
 
-    /** @var CreateProjectService */
+    /** @var CreateProjectServiceInterface */
     private $createProject;
 
     protected function setUp()
@@ -54,7 +54,7 @@ class ProductSenderIntegrationTest extends IntegrationTestAbstract
         $projectApi = new ProjectV1Api($config);
 
         $this->createProject = $this->objectManager->create(
-            CreateProjectService::class,
+            CreateProjectServiceInterface::class,
             ['projectApi' => $projectApi]
         );
 
