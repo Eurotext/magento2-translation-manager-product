@@ -6,13 +6,13 @@ declare(strict_types=1);
  * @see LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerProduct\Test\Integration\Receiver;
+namespace Eurotext\TranslationManagerProduct\Test\Integration\Retriever;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1ApiInterface;
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
-use Eurotext\TranslationManagerProduct\Receiver\ProductReceiver;
+use Eurotext\TranslationManagerProduct\Retriever\ProductRetriever;
 use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
 use Eurotext\TranslationManagerProduct\ScopeConfig\ProductScopeConfigReader;
 use Eurotext\TranslationManagerProduct\Test\Builder\ProjectProductMockBuilder;
@@ -24,9 +24,9 @@ use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchResultsInterface;
 
-class ProductReceiverUnitTest extends UnitTestAbstract
+class ProductRetrieverUnitTest extends UnitTestAbstract
 {
-    /** @var ProductReceiver */
+    /** @var ProductRetriever */
     private $sut;
 
     /** @var ProjectMockBuilder */
@@ -75,7 +75,7 @@ class ProductReceiverUnitTest extends UnitTestAbstract
         $this->projectProductMockBuilder = new ProjectProductMockBuilder($this);
 
         $this->sut = $this->objectManager->getObject(
-            ProductReceiver::class,
+            ProductRetriever::class,
             [
                 'itemApi'                  => $this->itemApi,
                 'projectProductRepository' => $this->projectProductRepository,
@@ -85,7 +85,7 @@ class ProductReceiverUnitTest extends UnitTestAbstract
         );
     }
 
-    public function testItShouldReceiveProjectProducts()
+    public function testItShouldRetrieveProjectProducts()
     {
         $productId = 1;
         $storeId   = 3;
@@ -110,8 +110,8 @@ class ProductReceiverUnitTest extends UnitTestAbstract
         $this->productRepository->expects($this->once())->method('getById')
                                 ->with($productId, true, $storeId)->willReturn($product);
 
-        // Receive Project from Eurotext
-        $result = $this->sut->receive($project);
+        // Retrieve Project from Eurotext
+        $result = $this->sut->retrieve($project);
 
         $this->assertTrue($result);
     }
@@ -152,8 +152,8 @@ class ProductReceiverUnitTest extends UnitTestAbstract
 
         $this->itemApi->method('get')->willThrowException($apiException);
 
-        // Receive Project from Eurotext
-        $result = $this->sut->receive($project);
+        // Retrieve Project from Eurotext
+        $result = $this->sut->retrieve($project);
 
         $this->assertFalse($result);
     }

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @see LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerProduct\Test\Integration\Receiver;
+namespace Eurotext\TranslationManagerProduct\Test\Integration\Retriever;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1Api;
 use Eurotext\RestApiClient\Api\ProjectV1Api;
@@ -16,19 +16,19 @@ use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
-use Eurotext\TranslationManagerProduct\Receiver\ProductReceiver;
+use Eurotext\TranslationManagerProduct\Retriever\ProductRetriever;
 use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
 use Eurotext\TranslationManagerProduct\Sender\ProductSender;
 use Eurotext\TranslationManagerProduct\Test\Integration\Provider\ProjectProductProvider;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 
-class ProductReceiverIntegrationTest extends IntegrationTestAbstract
+class ProductRetrieverIntegrationTest extends IntegrationTestAbstract
 {
     /** @var ProjectProductRepository */
     private $projectProductRepository;
 
-    /** @var ProductReceiver */
+    /** @var ProductRetriever */
     private $sut;
 
     /** @var ProjectProductProvider */
@@ -56,7 +56,7 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
         $itemApi = new ItemV1Api($config);
 
         $this->sut = $this->objectManager->create(
-            ProductReceiver::class,
+            ProductRetriever::class,
             [
                 'itemApi' => $itemApi,
             ]
@@ -89,10 +89,10 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testItShouldReceiveProjectProducts()
+    public function testItShouldRetrieveProjectProducts()
     {
         $productId = 10;
-        $name      = __CLASS__ . '-product-receiver';
+        $name      = __CLASS__ . '-product-retriever';
 
         $project = $this->projectProvider->createProject($name);
 
@@ -118,8 +118,8 @@ class ProductReceiverIntegrationTest extends IntegrationTestAbstract
         } catch (LocalizedException $e) {
         }
 
-        // Receive Project from Eurotext
-        $result = $this->sut->receive($project);
+        // Retrieve Project from Eurotext
+        $result = $this->sut->retrieve($project);
 
         $this->assertTrue($result);
 

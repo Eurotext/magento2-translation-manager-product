@@ -6,12 +6,12 @@ declare(strict_types=1);
  * @see PROJECT_LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerProduct\Receiver;
+namespace Eurotext\TranslationManagerProduct\Retriever;
 
 use Eurotext\RestApiClient\Api\Project\ItemV1ApiInterface;
 use Eurotext\RestApiClient\Request\Project\ItemGetRequest;
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
-use Eurotext\TranslationManager\Api\EntityReceiverInterface;
+use Eurotext\TranslationManager\Api\EntityRetrieverInterface;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Mapper\ProductItemGetMapper;
@@ -21,7 +21,7 @@ use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Psr\Log\LoggerInterface;
 
-class ProductReceiver implements EntityReceiverInterface
+class ProductRetriever implements EntityRetrieverInterface
 {
     /**
      * @var ProjectProductRepositoryInterface
@@ -69,7 +69,7 @@ class ProductReceiver implements EntityReceiverInterface
         $this->logger                   = $logger;
     }
 
-    public function receive(ProjectInterface $project): bool
+    public function retrieve(ProjectInterface $project): bool
     {
         $result = true;
 
@@ -77,7 +77,7 @@ class ProductReceiver implements EntityReceiverInterface
         $projectExtId = $project->getExtId();
         $storeId      = $project->getStoreviewDst();
 
-        $this->logger->info(sprintf('receive project products project-id:%d', $projectId));
+        $this->logger->info(sprintf('retrieve project products project-id:%d', $projectId));
 
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::EXT_ID, 0, 'gt');

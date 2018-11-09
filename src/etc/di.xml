@@ -19,10 +19,10 @@
         </arguments>
     </type>
 
-    <type name="Eurotext\TranslationManager\Receiver\EntityReceiverPool">
+    <type name="Eurotext\TranslationManager\Retriever\EntityRetrieverPool">
         <arguments>
             <argument name="items" xsi:type="array">
-                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Receiver\ProductReceiver</item>
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Retriever\ProductRetriever</item>
             </argument>
         </arguments>
     </type>
@@ -42,7 +42,7 @@
         </arguments>
     </type>
 
-    <type name="Eurotext\TranslationManagerProduct\Receiver\ProductReceiver">
+    <type name="Eurotext\TranslationManagerProduct\Retriever\ProductRetriever">
         <arguments>
             <!-- @todo to we want a file log per entity or use the global logger -->
             <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
