@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Setup\Service;
 
-use Eurotext\TranslationManager\Setup\Service\AddEntityTableColumnsInterface;
+use Eurotext\TranslationManager\Api\Setup\AddEntityTableColumnsInterface;
 use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use Magento\Framework\Setup\SchemaSetupInterface;
 
