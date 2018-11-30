@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Setup;
 
-use Eurotext\TranslationManager\Setup\EntitySchema\ProjectEntitySchema;
+use Eurotext\TranslationManager\Api\Setup\ProjectEntitySchema;
 
 class ProjectProductSchema implements ProjectEntitySchema
 {
