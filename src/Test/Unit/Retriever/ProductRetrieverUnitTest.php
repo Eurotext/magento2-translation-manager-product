@@ -12,8 +12,8 @@ use Eurotext\RestApiClient\Api\Project\ItemV1ApiInterface;
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
-use Eurotext\TranslationManagerProduct\Retriever\ProductRetriever;
 use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
+use Eurotext\TranslationManagerProduct\Retriever\ProductRetriever;
 use Eurotext\TranslationManagerProduct\ScopeConfig\ProductScopeConfigReader;
 use Eurotext\TranslationManagerProduct\Test\Builder\ProjectProductMockBuilder;
 use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
@@ -98,7 +98,7 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
         $projectProduct = $this->projectProductMockBuilder->buildProjectProductMock();
         $projectProduct->expects($this->once())->method('setStatus')->with($status);
         $projectProduct->expects($this->once())->method('setLastError')->with($lastError);
-        $projectProduct->expects($this->once())->method('getProductId')->willReturn($productId);
+        $projectProduct->expects($this->once())->method('getEntityId')->willReturn($productId);
         $projectProduct->expects($this->once())->method('getExtId')->willReturn(2423);
 
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($this->searchResults);
@@ -118,7 +118,7 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
 
     public function testItShouldSetLastErrorForGuzzleException()
     {
-        $lastError = 'The Message from the exception that occured';
+        $lastError    = 'The Message from the exception that occured';
         $apiException = new TransferException($lastError);
 
         $this->runTestExceptionsAreHandledCorrectly($apiException);
@@ -126,7 +126,7 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
 
     public function testItShouldSetLastErrorForException()
     {
-        $lastError = 'The Message from the exception that occured';
+        $lastError    = 'The Message from the exception that occured';
         $apiException = new \Exception($lastError);
 
         $this->runTestExceptionsAreHandledCorrectly($apiException);
@@ -134,7 +134,7 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
 
     private function runTestExceptionsAreHandledCorrectly(\Exception $apiException)
     {
-        $status    = ProjectProductInterface::STATUS_ERROR;
+        $status = ProjectProductInterface::STATUS_ERROR;
 
         $project = $this->projectMockBuilder->buildProjectMock();
 

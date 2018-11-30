@@ -14,7 +14,7 @@ use Eurotext\TranslationManager\Api\EntitySenderInterface;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Mapper\ProductItemPostMapper;
-use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
+use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -93,7 +93,7 @@ class ProductSender implements EntitySenderInterface
                 continue;
             }
 
-            $productId = $projectProduct->getProductId();
+            $productId = $projectProduct->getEntityId();
 
             $product = $this->productRepository->getById($productId);
 

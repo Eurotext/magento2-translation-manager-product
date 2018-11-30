@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Model\ResourceModel;
 
-use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
+use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 
 class ProjectProductResource extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {

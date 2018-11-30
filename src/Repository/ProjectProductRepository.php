@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Eurotext\TranslationManagerProduct\Repository;
 
-use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
-use Eurotext\TranslationManagerProduct\Repository\Service\GetProjectProductListService;
-use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
+use Eurotext\TranslationManager\Api\Data\ProjectEntityInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
+use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
+use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductCollectionFactory;
+use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductResource;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Framework\Api\SearchResultsInterfaceFactory;
+use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -22,29 +25,43 @@ class ProjectProductRepository implements ProjectProductRepositoryInterface
     protected $projectProductFactory;
 
     /**
-     * @var GetProjectProductListService
+     * @var ProjectProductResource
      */
-    private $getProjectProductList;
+    private $productResource;
+
+    /**
+     * @var ProjectProductCollectionFactory
+     */
+    private $collectionFactory;
+
+    /**
+     * @var SearchResultsInterfaceFactory
+     */
+    private $searchResultsFactory;
 
     public function __construct(
-        GetProjectProductListService $getProjectList,
-        ProjectProductFactory $projectFactory
+        ProjectProductResource $productResource,
+        ProjectProductFactory $projectFactory,
+        ProjectProductCollectionFactory $collectionFactory,
+        SearchResultsInterfaceFactory $searchResultsFactory
     ) {
         $this->projectProductFactory = $projectFactory;
-        $this->getProjectProductList = $getProjectList;
+        $this->productResource       = $productResource;
+        $this->collectionFactory     = $collectionFactory;
+        $this->searchResultsFactory  = $searchResultsFactory;
     }
 
     /**
-     * @param ProjectProductInterface $object
+     * @param ProjectEntityInterface $object
      *
-     * @return ProjectProductInterface
+     * @return ProjectEntityInterface
      * @throws CouldNotSaveException
      */
-    public function save(ProjectProductInterface $object): ProjectProductInterface
+    public function save(ProjectEntityInterface $object): ProjectEntityInterface
     {
         try {
             /** @var ProjectProduct $object */
-            $object->save();
+            $this->productResource->save($object);
         } catch (\Exception $e) {
             throw new CouldNotSaveException(__($e->getMessage()));
         }
@@ -55,14 +72,14 @@ class ProjectProductRepository implements ProjectProductRepositoryInterface
     /**
      * @param int $id
      *
-     * @return ProjectProductInterface
+     * @return ProjectEntityInterface
      * @throws NoSuchEntityException
      */
-    public function getById(int $id): ProjectProductInterface
+    public function getById(int $id): ProjectEntityInterface
     {
         /** @var ProjectProduct $object */
         $object = $this->projectProductFactory->create();
-        $object->load($id);
+        $this->productResource->load($object, $id);
         if (!$object->getId()) {
             throw new NoSuchEntityException(__('Project with id "%1" does not exist.', $id));
         }
@@ -71,16 +88,16 @@ class ProjectProductRepository implements ProjectProductRepositoryInterface
     }
 
     /**
-     * @param ProjectProductInterface $object
+     * @param ProjectEntityInterface $object
      *
      * @return bool
      * @throws CouldNotDeleteException
      */
-    public function delete(ProjectProductInterface $object): bool
+    public function delete(ProjectEntityInterface $object): bool
     {
         try {
             /** @var ProjectProduct $object */
-            $object->delete();
+            $this->productResource->delete($object);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(__($exception->getMessage()));
         }
@@ -104,6 +121,42 @@ class ProjectProductRepository implements ProjectProductRepositoryInterface
 
     public function getList(SearchCriteriaInterface $criteria): SearchResultsInterface
     {
-        return $this->getProjectProductList->execute($criteria);
+        /** @var \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection $collection */
+        $collection = $this->collectionFactory->create();
+        foreach ($criteria->getFilterGroups() as $filterGroup) {
+            $fields     = [];
+            $conditions = [];
+            foreach ($filterGroup->getFilters() as $filter) {
+                $condition    = $filter->getConditionType() ?: 'eq';
+                $fields[]     = $filter->getField();
+                $conditions[] = [$condition => $filter->getValue()];
+            }
+            if ($fields) {
+                $collection->addFieldToFilter($fields, $conditions);
+            }
+        }
+        $sortOrders = $criteria->getSortOrders();
+        if ($sortOrders) {
+            /** @var SortOrder $sortOrder */
+            foreach ($sortOrders as $sortOrder) {
+                $direction = ($sortOrder->getDirection() === SortOrder::SORT_ASC) ? 'ASC' : 'DESC';
+                $collection->addOrder($sortOrder->getField(), $direction);
+            }
+        }
+        $collection->setCurPage($criteria->getCurrentPage());
+        $collection->setPageSize($criteria->getPageSize());
+
+        $objects = [];
+        foreach ($collection as $objectModel) {
+            $objects[] = $objectModel;
+        }
+
+        /** @var \Magento\Framework\Api\SearchResultsInterface $searchResults */
+        $searchResults = $this->searchResultsFactory->create();
+        $searchResults->setSearchCriteria($criteria);
+        $searchResults->setTotalCount($collection->getSize());
+        $searchResults->setItems($objects);
+
+        return $searchResults;
     }
 }

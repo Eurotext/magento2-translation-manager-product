@@ -15,7 +15,7 @@ use Eurotext\TranslationManager\Api\EntityRetrieverInterface;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Mapper\ProductItemGetMapper;
-use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
+use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -93,7 +93,7 @@ class ProductRetriever implements EntityRetrieverInterface
 
             /** @var $projectProduct ProjectProductInterface */
             $itemExtId = $projectProduct->getExtId();
-            $productId = $projectProduct->getProductId();
+            $productId = $projectProduct->getEntityId();
 
             try {
                 $product = $this->productRepository->getById($productId, true, $storeId);

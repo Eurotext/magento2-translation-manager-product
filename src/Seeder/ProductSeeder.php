@@ -10,10 +10,10 @@ namespace Eurotext\TranslationManagerProduct\Seeder;
 
 use Eurotext\TranslationManager\Api\Data\ProjectInterface;
 use Eurotext\TranslationManager\Api\EntitySeederInterface;
-use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
-use Eurotext\TranslationManagerProduct\Setup\EntitySchema\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
+use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
+use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -82,7 +82,7 @@ class ProductSeeder implements EntitySeederInterface
             $productId = (int)$product->getId();
 
             $this->searchCriteriaBuilder
-                ->addFilter(ProjectProductSchema::PRODUCT_ID, $productId)
+                ->addFilter(ProjectProductSchema::ENTITY_ID, $productId)
                 ->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
             $searchCriteria = $this->searchCriteriaBuilder->create();
 
@@ -95,7 +95,7 @@ class ProductSeeder implements EntitySeederInterface
             /** @var ProjectProductInterface $projectProduct */
             $projectProduct = $this->projectProductFactory->create();
             $projectProduct->setProjectId($projectId);
-            $projectProduct->setProductId($productId);
+            $projectProduct->setEntityId($productId);
             $projectProduct->setStatus(ProjectProductInterface::STATUS_NEW);
 
             try {
