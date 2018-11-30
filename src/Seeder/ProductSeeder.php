@@ -17,8 +17,6 @@ use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Api\SearchCriteriaInterfaceFactory;
 
 /**
  * ProductSeeder
@@ -29,11 +27,6 @@ class ProductSeeder implements EntitySeederInterface
      * @var ProductRepositoryInterface
      */
     private $productRepository;
-
-    /**
-     * @var SearchCriteriaInterfaceFactory
-     */
-    private $searchCriteriaFactory;
 
     /**
      * @var ProjectProductFactory
@@ -52,13 +45,11 @@ class ProductSeeder implements EntitySeederInterface
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        SearchCriteriaInterfaceFactory $searchCriteriaFactory,
         ProjectProductFactory $projectProductFactory,
         ProjectProductRepositoryInterface $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->productRepository        = $productRepository;
-        $this->searchCriteriaFactory    = $searchCriteriaFactory;
         $this->projectProductFactory    = $projectProductFactory;
         $this->projectProductRepository = $projectProductRepository;
         $this->searchCriteriaBuilder    = $searchCriteriaBuilder;
@@ -69,8 +60,7 @@ class ProductSeeder implements EntitySeederInterface
         $result = true;
 
         // get product collection
-        /** @var $searchCriteria SearchCriteriaInterface */
-        $searchCriteria = $this->searchCriteriaFactory->create();
+        $searchCriteria = $this->searchCriteriaBuilder->create();
         $searchResult   = $this->productRepository->getList($searchCriteria);
 
         // create project product configurations
