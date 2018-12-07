@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Model;
 
 use Eurotext\TranslationManager\Model\AbstractProjectEntity;
+use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductCollection;
 use Eurotext\TranslationManagerProduct\Model\ResourceModel\ProjectProductResource;
 
-class ProjectProduct extends AbstractProjectEntity
+class ProjectProduct extends AbstractProjectEntity implements ProjectProductInterface
 {
     const CACHE_TAG = 'eurotext_project_product';
 
