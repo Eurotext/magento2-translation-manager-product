@@ -57,19 +57,14 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
     {
         parent::setUp();
 
-        $this->itemApi = $this->getMockBuilder(ItemV1ApiInterface::class)->getMock();
+        $this->itemApi = $this->createMock(ItemV1ApiInterface::class);
 
-        $this->projectProductRepository =
-            $this->getMockBuilder(ProjectProductRepositoryInterface::class)->getMock();
-
-        $this->searchCriteriaBuilder =
-            $this->getMockBuilder(SearchCriteriaBuilder::class)->disableOriginalConstructor()
-                 ->setMethods(['create', 'addFilter'])->getMock();
+        $this->projectProductRepository = $this->createMock(ProjectProductRepositoryInterface::class);
+        $this->searchCriteriaBuilder    = $this->createMock(SearchCriteriaBuilder::class);
         $this->searchCriteriaBuilder->method('create')->willReturn(new SearchCriteria());
 
-        $this->searchResults = $this->getMockBuilder(SearchResultsInterface::class)->getMockForAbstractClass();
-
-        $this->productRepository = $this->getMockBuilder(ProductRepositoryInterface::class)->getMock();
+        $this->searchResults     = $this->createMock(SearchResultsInterface::class);
+        $this->productRepository = $this->createMock(ProductRepositoryInterface::class);
 
         $this->projectMockBuilder        = new ProjectMockBuilder($this);
         $this->projectProductMockBuilder = new ProjectProductMockBuilder($this);
@@ -106,7 +101,7 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
 
         $this->searchResults->expects($this->once())->method('getItems')->willReturn([$projectProduct]);
 
-        $product = $this->getMockBuilder(ProductInterface::class)->getMock();
+        $product = $this->createMock(ProductInterface::class);
         $this->productRepository->expects($this->once())->method('getById')
                                 ->with($productId, true, $storeId)->willReturn($product);
 
@@ -147,7 +142,7 @@ class ProductRetrieverUnitTest extends UnitTestAbstract
 
         $this->searchResults->expects($this->once())->method('getItems')->willReturn([$projectProduct]);
 
-        $product = $this->getMockBuilder(ProductInterface::class)->getMock();
+        $product = $this->createMock(ProductInterface::class);
         $this->productRepository->expects($this->once())->method('getById')->willReturn($product);
 
         $this->itemApi->method('get')->willThrowException($apiException);

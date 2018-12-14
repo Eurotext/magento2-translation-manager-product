@@ -32,13 +32,8 @@ class ProductItemPostMapperUnitTest extends UnitTestAbstract
     {
         parent::setUp();
 
-        $this->scopeConfig = $this->getMockBuilder(ScopeConfigReaderInterface::class)->getMockForAbstractClass();
-
-        $this->productScopeConfig =
-            $this->getMockBuilder(ProductScopeConfigReader::class)
-                 ->setMethods(['getAttributesEnabled'])
-                 ->disableOriginalConstructor()
-                 ->getMock();
+        $this->scopeConfig        = $this->createMock(ScopeConfigReaderInterface::class);
+        $this->productScopeConfig = $this->createMock(ProductScopeConfigReader::class);
 
         $this->sut = $this->objectManager->getObject(
             ProductItemPostMapper::class,
@@ -69,14 +64,14 @@ class ProductItemPostMapperUnitTest extends UnitTestAbstract
         $attributesEnabled = [$attrCodeName, $attrCodeDesc, $attrCodeShortDesc];
 
         // Mock Product with Custom Attributes
-        $descAttribute = $this->getMockBuilder(AttributeInterface::class)->getMock();
+        $descAttribute = $this->createMock(AttributeInterface::class);
         $descAttribute->expects($this->once())->method('getValue')->willReturn($descValue);
 
-        $shortDescAttribute = $this->getMockBuilder(AttributeInterface::class)->getMock();
+        $shortDescAttribute = $this->createMock(AttributeInterface::class);
         $shortDescAttribute->expects($this->once())->method('getValue')->willReturn($shortDescValue);
 
         /** @var ProductInterface|\PHPUnit_Framework_MockObject_MockObject $product */
-        $product = $this->getMockBuilder(ProductInterface::class)->getMockForAbstractClass();
+        $product = $this->createMock(ProductInterface::class);
         $product->expects($this->any())->method('getId')->willReturn($productId);
         $product->expects($this->once())->method('getName')->willReturn($nameValue);
         $product->expects($this->exactly(3))
@@ -85,7 +80,7 @@ class ProductItemPostMapperUnitTest extends UnitTestAbstract
 
         // Mock Project
         /** @var ProjectInterface|\PHPUnit_Framework_MockObject_MockObject $project */
-        $project = $this->getMockBuilder(ProjectInterface::class)->getMockForAbstractClass();
+        $project = $this->createMock(ProjectInterface::class);
         $project->expects($this->once())->method('getExtId')->willReturn($projectId);
         $project->expects($this->once())->method('getStoreviewSrc')->willReturn($storeViewSrc);
         $project->expects($this->once())->method('getStoreviewDst')->willReturn($storeViewDst);
