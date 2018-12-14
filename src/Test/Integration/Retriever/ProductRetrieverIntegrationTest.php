@@ -16,8 +16,8 @@ use Eurotext\TranslationManager\Test\Builder\ConfigurationMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManagerProduct\Model\ProjectProduct;
-use Eurotext\TranslationManagerProduct\Retriever\ProductRetriever;
 use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
+use Eurotext\TranslationManagerProduct\Retriever\ProductRetriever;
 use Eurotext\TranslationManagerProduct\Sender\ProductSender;
 use Eurotext\TranslationManagerProduct\Test\Integration\Provider\ProjectProductProvider;
 use Magento\Framework\App\State;
@@ -50,35 +50,21 @@ class ProductRetrieverIntegrationTest extends IntegrationTestAbstract
     {
         parent::setUp();
 
-        $configBuiler = new ConfigurationMockBuilder($this);
-        $config       = $configBuiler->buildConfiguration();
+        $config       = (new ConfigurationMockBuilder($this))->buildConfiguration();
 
         $itemApi = new ItemV1Api($config);
-
-        $this->sut = $this->objectManager->create(
-            ProductRetriever::class,
-            [
-                'itemApi' => $itemApi,
-            ]
-        );
-
         $this->projectApi = new ProjectV1Api($config);
 
+        $this->sut = $this->objectManager->create(ProductRetriever::class, ['itemApi' => $itemApi]);
+
         $this->createProject = $this->objectManager->create(
-            CreateProjectServiceInterface::class,
-            ['projectApi' => $this->projectApi]
+            CreateProjectServiceInterface::class, ['projectApi' => $this->projectApi]
         );
 
-        $this->productSender = $this->objectManager->create(
-            ProductSender::class,
-            [
-                'itemApi' => $itemApi,
-            ]
-        );
+        $this->productSender = $this->objectManager->create(ProductSender::class, ['itemApi' => $itemApi]);
 
-        $this->projectProvider        = $this->objectManager->get(ProjectProvider::class);
-        $this->projectProductProvider = $this->objectManager->get(ProjectProductProvider::class);
-
+        $this->projectProvider          = $this->objectManager->get(ProjectProvider::class);
+        $this->projectProductProvider   = $this->objectManager->get(ProjectProductProvider::class);
         $this->projectProductRepository = $this->objectManager->get(ProjectProductRepository::class);
     }
 
