@@ -9,12 +9,10 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Test\Unit\Seeder;
 
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
-use Eurotext\TranslationManagerEav\Api\Data\ProjectAttributeInterface;
-use Eurotext\TranslationManagerEav\Setup\ProjectAttributeSchema;
-use Eurotext\TranslationManagerEav\Test\Unit\UnitTestAbstract;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
+use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductSearchResultsInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -70,10 +68,6 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $entityId     = 11;
         $pEntityCount = 0;
 
-        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
-            [ProjectAttributeSchema::ENTITY_ID, $entityId],
-            [ProjectAttributeSchema::PROJECT_ID, $projectId]
-        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -120,10 +114,6 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $entityId     = 11;
         $pEntityCount = 1;
 
-        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
-            [ProjectAttributeSchema::ENTITY_ID, $entityId],
-            [ProjectAttributeSchema::PROJECT_ID, $projectId]
-        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -164,10 +154,6 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $entityId     = 11;
         $pEntityCount = 0;
 
-        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
-            [ProjectAttributeSchema::ENTITY_ID, $entityId],
-            [ProjectAttributeSchema::PROJECT_ID, $projectId]
-        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
