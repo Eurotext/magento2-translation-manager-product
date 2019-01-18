@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @see PROJECT_LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerEav\Test\Unit\Seeder;
+namespace Eurotext\TranslationManagerProduct\Test\Unit\Seeder;
 
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
 use Eurotext\TranslationManagerEav\Api\Data\ProjectAttributeInterface;
