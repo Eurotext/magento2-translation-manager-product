@@ -77,7 +77,7 @@ class ProductSeeder implements EntitySeederInterface
 
         if ($searchResult->getTotalCount() === 0) {
             // no products found, matching the criteria
-            $this->logger->warning('no products found, matching the criteria');
+            $this->logger->warning('no matching products found');
 
             return $result;
         }
