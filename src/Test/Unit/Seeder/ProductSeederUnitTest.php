@@ -15,6 +15,7 @@ use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
 use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
+use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductSearchResultsInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -314,6 +315,153 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $result = $this->sut->seed($project, $entities);
 
         $this->assertTrue($result);
+    }
+
+    public function testItShouldValidateWebsiteAssignment()
+    {
+        $storeId      = 44;
+        $projectId    = 33;
+        $totalCount   = 1;
+        $entityId     = 11;
+        $pEntityCount = 0;
+        $entity       = 'some-entity';
+        $entities     = [$entity];
+
+        $this->searchCriteriaBuilder->method('addFilter')
+                                    ->withConsecutive(
+                                        ['sku', $entities, 'in'],
+                                        [ProjectProductSchema::ENTITY_ID, $entityId],
+                                        [ProjectProductSchema::PROJECT_ID, $projectId]
+                                    )->willReturnSelf();
+        $this->searchCriteriaBuilder->expects($this->exactly(2))
+                                    ->method('create')
+                                    ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
+
+        // Product
+        $productExtension = $this->createMock(ProductExtensionInterface::class);
+        $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn([$storeId]);
+
+        $product = $this->createMock(ProductInterface::class);
+        $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
+        $product->expects($this->atLeastOnce())->method('getSku')->willReturn($entity);
+        $product->expects($this->once())->method('getExtensionAttributes')->willReturn($productExtension);
+
+        $productResult = $this->createMock(ProductSearchResultsInterface::class);
+        $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
+        $productResult->expects($this->once())->method('getItems')->willReturn([$product]);
+
+        $this->productRepository->expects($this->once())->method('getList')->willReturn($productResult);
+
+        // Search existing project entity
+        $projectEntityResult = $this->createMock(SearchResultsInterface::class);
+        $projectEntityResult->expects($this->once())->method('getTotalCount')->willReturn($pEntityCount);
+
+        $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($projectEntityResult);
+        $this->projectProductRepository->expects($this->once())->method('save');
+
+        // New project entity
+        $pProduct = $this->createMock(ProjectProductInterface::class);
+        $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
+        $pProduct->expects($this->once())->method('setEntityId')->with($entityId);
+        $pProduct->expects($this->once())->method('setStatus')->with(ProjectProductInterface::STATUS_NEW);
+
+        $this->projectProductFactory->expects($this->once())->method('create')->willReturn($pProduct);
+
+        // project mock
+        $project = $this->projectBuilder->buildProjectMock();
+        $project->expects($this->once())->method('getId')->willReturn($projectId);
+        $project->expects($this->once())->method('getStoreviewDst')->willReturn($storeId);
+
+        $this->logger->expects($this->never())->method('error');
+
+        // TEST
+        $result = $this->sut->seed($project, $entities);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @param int[] $productWebsiteIds
+     *
+     * @dataProvider provideProductWebsiteAssignments
+     */
+    public function testItShouldValidateMissingWebsiteAndLog($productWebsiteIds)
+    {
+        $storeId      = 44;
+        $projectId    = 33;
+        $totalCount   = 1;
+        $entityId     = 11;
+        $pEntityCount = 0;
+        $entity       = 'some-entity';
+        $entities     = [$entity];
+
+        $this->searchCriteriaBuilder->method('addFilter')
+                                    ->withConsecutive(
+                                        ['sku', $entities, 'in'],
+                                        [ProjectProductSchema::ENTITY_ID, $entityId],
+                                        [ProjectProductSchema::PROJECT_ID, $projectId]
+                                    )->willReturnSelf();
+        $this->searchCriteriaBuilder->expects($this->exactly(2))
+                                    ->method('create')
+                                    ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
+
+        // Product
+        $productExtension = $this->createMock(ProductExtensionInterface::class);
+        $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn($productWebsiteIds);
+
+        $product = $this->createMock(ProductInterface::class);
+        $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
+        $product->expects($this->atLeastOnce())->method('getSku')->willReturn($entity);
+        $product->expects($this->once())->method('getExtensionAttributes')->willReturn($productExtension);
+
+        $productResult = $this->createMock(ProductSearchResultsInterface::class);
+        $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
+        $productResult->expects($this->once())->method('getItems')->willReturn([$product]);
+
+        $this->productRepository->expects($this->once())->method('getList')->willReturn($productResult);
+
+        // Search existing project entity
+        $projectEntityResult = $this->createMock(SearchResultsInterface::class);
+        $projectEntityResult->expects($this->once())->method('getTotalCount')->willReturn($pEntityCount);
+
+        $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($projectEntityResult);
+        $this->projectProductRepository->expects($this->once())->method('save');
+
+        // New project entity
+        $pProduct = $this->createMock(ProjectProductInterface::class);
+        $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
+        $pProduct->expects($this->once())->method('setEntityId')->with($entityId);
+        $pProduct->expects($this->once())->method('setStatus')->with(ProjectProductInterface::STATUS_NEW);
+
+        $this->projectProductFactory->expects($this->once())->method('create')->willReturn($pProduct);
+
+        // project mock
+        $project = $this->projectBuilder->buildProjectMock();
+        $project->expects($this->once())->method('getId')->willReturn($projectId);
+        $project->expects($this->once())->method('getStoreviewDst')->willReturn($storeId);
+
+        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->once())->method('warning');
+
+        // TEST
+        $result = $this->sut->seed($project, $entities);
+
+        $this->assertTrue($result);
+    }
+
+    public function provideProductWebsiteAssignments()
+    {
+        return [
+            'missing-assignment' => [
+                'productWebsiteIds' => [55],
+            ],
+            'no-websites'        => [
+                'productWebsiteIds' => [],
+            ],
+            'no-websites-array'  => [
+                'productWebsiteIds' => null,
+            ],
+        ];
     }
 
 }

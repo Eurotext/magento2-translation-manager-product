@@ -141,25 +141,33 @@ class ProductSeeder implements EntitySeederInterface
         /** @var $product ProductInterface */
         $productId        = (int)$product->getId();
         $productSku       = $product->getSku();
+        $websiteIdDest    = $project->getStoreviewDst();
         $productExtension = $product->getExtensionAttributes();
 
         if (!$productExtension instanceof ProductExtensionInterface) {
+            $this->logger->warning(
+                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+            );
+
             return false;
         }
         $websiteIds = $productExtension->getWebsiteIds();
         if (!is_array($websiteIds)) {
+            $this->logger->warning(
+                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+            );
+
             return false;
         }
 
-        $websiteIdDest = $project->getStoreviewDst();
-        if (in_array($websiteIdDest, $websiteIds, false)) {
-            return true;
+        if (!in_array($websiteIdDest, $websiteIds, false)) {
+            $this->logger->warning(
+                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+            );
+
+            return false;
         }
 
-        $this->logger->warning(
-            sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
-        );
-
-        return false;
+        return true;
     }
 }
