@@ -14,6 +14,7 @@ use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
 use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
+use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -109,6 +110,8 @@ class ProductSeeder implements EntitySeederInterface
                 continue;
             }
 
+            $this->validateWebsiteAssignment($project, $product);
+
             /** @var ProjectProductInterface $projectProduct */
             $projectProduct = $this->projectProductFactory->create();
             $projectProduct->setProjectId($projectId);
@@ -131,5 +134,32 @@ class ProductSeeder implements EntitySeederInterface
         }
 
         return $result;
+    }
+
+    private function validateWebsiteAssignment(ProjectInterface $project, ProductInterface $product): bool
+    {
+        /** @var $product ProductInterface */
+        $productId        = (int)$product->getId();
+        $productSku       = $product->getSku();
+        $productExtension = $product->getExtensionAttributes();
+
+        if (!$productExtension instanceof ProductExtensionInterface) {
+            return false;
+        }
+        $websiteIds = $productExtension->getWebsiteIds();
+        if (!is_array($websiteIds)) {
+            return false;
+        }
+
+        $websiteIdDest = $project->getStoreviewDst();
+        if (in_array($websiteIdDest, $websiteIds, false)) {
+            return true;
+        }
+
+        $this->logger->warning(
+            sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+        );
+
+        return false;
     }
 }

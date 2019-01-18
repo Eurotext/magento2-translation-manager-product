@@ -86,7 +86,7 @@ class ProductSeederUnitTest extends UnitTestAbstract
 
         // Product
         $product = $this->createMock(ProductInterface::class);
-        $product->expects($this->once())->method('getId')->willReturn($entityId);
+        $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
 
         $productResult = $this->createMock(ProductSearchResultsInterface::class);
         $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
@@ -136,7 +136,7 @@ class ProductSeederUnitTest extends UnitTestAbstract
 
         // Product
         $product = $this->createMock(ProductInterface::class);
-        $product->expects($this->once())->method('getId')->willReturn($entityId);
+        $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
 
         $productResult = $this->createMock(ProductSearchResultsInterface::class);
         $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
@@ -180,7 +180,7 @@ class ProductSeederUnitTest extends UnitTestAbstract
 
         // Product
         $product = $this->createMock(ProductInterface::class);
-        $product->expects($this->once())->method('getId')->willReturn($entityId);
+        $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
 
         $productResult = $this->createMock(ProductSearchResultsInterface::class);
         $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
@@ -280,8 +280,8 @@ class ProductSeederUnitTest extends UnitTestAbstract
 
         // Product
         $product = $this->createMock(ProductInterface::class);
-        $product->expects($this->once())->method('getId')->willReturn($entityId);
-        $product->expects($this->once())->method('getSku')->willReturn($entity);
+        $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
+        $product->expects($this->atLeastOnce())->method('getSku')->willReturn($entity);
 
         $productResult = $this->createMock(ProductSearchResultsInterface::class);
         $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
