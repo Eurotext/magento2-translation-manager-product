@@ -55,13 +55,21 @@ class ProductSeeder implements EntitySeederInterface
         $this->searchCriteriaBuilder    = $searchCriteriaBuilder;
     }
 
-    public function seed(ProjectInterface $project): bool
+    public function seed(ProjectInterface $project, array $entities = []): bool
     {
         $result = true;
 
         // get product collection
+        if (count($entities) > 0) {
+            $this->searchCriteriaBuilder->addFilter('sku', $entities, 'in');
+        }
         $searchCriteria = $this->searchCriteriaBuilder->create();
-        $searchResult   = $this->productRepository->getList($searchCriteria);
+
+        $searchResult = $this->productRepository->getList($searchCriteria);
+
+        if ($searchResult->getTotalCount() === 0) {
+            return $result;
+        }
 
         // create project product configurations
         $products = $searchResult->getItems();
