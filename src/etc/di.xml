@@ -35,6 +35,13 @@
         </arguments>
     </type>
 
+    <type name="Eurotext\TranslationManagerProduct\Seeder\ProductSeeder">
+        <arguments>
+            <!-- @todo to we want a file log per entity or use the global logger -->
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
     <type name="Eurotext\TranslationManagerProduct\Sender\ProductSender">
         <arguments>
             <!-- @todo to we want a file log per entity or use the global logger -->
