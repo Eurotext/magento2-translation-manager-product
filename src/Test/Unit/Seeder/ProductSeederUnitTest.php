@@ -9,9 +9,11 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Test\Unit\Seeder;
 
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
+use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
+use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductSearchResultsInterface;
@@ -68,6 +70,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $entityId     = 11;
         $pEntityCount = 0;
 
+        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
+            [ProjectProductSchema::ENTITY_ID, $entityId],
+            [ProjectProductSchema::PROJECT_ID, $projectId]
+        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -90,10 +96,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $this->projectProductRepository->expects($this->once())->method('save');
 
         // New project entity
-        $pProduct = $this->createMock(ProjectAttributeInterface::class);
+        $pProduct = $this->createMock(ProjectProductInterface::class);
         $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
         $pProduct->expects($this->once())->method('setEntityId')->with($entityId);
-        $pProduct->expects($this->once())->method('setStatus')->with(ProjectAttributeInterface::STATUS_NEW);
+        $pProduct->expects($this->once())->method('setStatus')->with(ProjectProductInterface::STATUS_NEW);
 
         $this->projectProductFactory->expects($this->once())->method('create')->willReturn($pProduct);
 
@@ -114,6 +120,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $entityId     = 11;
         $pEntityCount = 1;
 
+        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
+            [ProjectProductSchema::ENTITY_ID, $entityId],
+            [ProjectProductSchema::PROJECT_ID, $projectId]
+        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -154,6 +164,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $entityId     = 11;
         $pEntityCount = 0;
 
+        $this->searchCriteriaBuilder->method('addFilter')->withConsecutive(
+            [ProjectProductSchema::ENTITY_ID, $entityId],
+            [ProjectProductSchema::PROJECT_ID, $projectId]
+        )->willReturnSelf();
         $this->searchCriteriaBuilder->expects($this->exactly(2))
                                     ->method('create')
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
@@ -176,10 +190,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $this->projectProductRepository->expects($this->once())->method('save')->willThrowException(new \Exception);
 
         // New project entity
-        $pProduct = $this->createMock(ProjectAttributeInterface::class);
+        $pProduct = $this->createMock(ProjectProductInterface::class);
         $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
         $pProduct->expects($this->once())->method('setEntityId')->with($entityId);
-        $pProduct->expects($this->once())->method('setStatus')->with(ProjectAttributeInterface::STATUS_NEW);
+        $pProduct->expects($this->once())->method('setStatus')->with(ProjectProductInterface::STATUS_NEW);
 
         $this->projectProductFactory->expects($this->once())->method('create')->willReturn($pProduct);
 
