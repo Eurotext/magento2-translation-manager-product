@@ -105,7 +105,7 @@ class ProductSeeder implements EntitySeederInterface
 
             if ($searchResults->getTotalCount() >= 1) {
                 // product has already been added to project
-                $this->logger->info(sprintf('skipping product-id:%d already added', $productId));
+                $this->logger->info(sprintf('skipping product "%s"(%d) already added', $productSku, $productId));
                 continue;
             }
 
