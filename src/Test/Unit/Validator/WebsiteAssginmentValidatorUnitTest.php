@@ -57,7 +57,7 @@ class WebsiteAssginmentValidatorUnitTest extends UnitTestAbstract
         $this->storeRepository->expects($this->once())->method('getById')->with($storeId)->willReturn($store);
 
         // Product
-        $productExtension = $this->createMock(ProductExtensionInterface::class);
+        $productExtension = $this->createPartialMock(ProductExtensionInterface::class, ['getWebsiteIds']);
         $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn([$websiteId]);
 
         /** @var ProductInterface|MockObject $product */
@@ -98,7 +98,7 @@ class WebsiteAssginmentValidatorUnitTest extends UnitTestAbstract
         $this->storeRepository->expects($this->once())->method('getById')->with($storeId)->willReturn($store);
 
         // Product
-        $productExtension = $this->createMock(ProductExtensionInterface::class);
+        $productExtension = $this->createPartialMock(ProductExtensionInterface::class, ['getWebsiteIds']);
         $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn($productWebsiteIds);
 
         /** @var ProductInterface|MockObject $product */
@@ -135,7 +135,7 @@ class WebsiteAssginmentValidatorUnitTest extends UnitTestAbstract
     public function testItShouldThrowExceptionIfProductExtensionIsMissing()
     {
         $this->expectException(\InvalidArgumentException::class);
-        
+
         $storeId   = 44;
         $websiteId = 234;
         $entityId  = 11;
