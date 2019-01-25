@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @see PROJECT_LICENSE.txt
  */
 
-namespace Eurotext\TranslationManagerProduct\Test\Unit\Seeder;
+namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
@@ -36,11 +36,7 @@ class WebsiteAssginmentValidatorTest extends IntegrationTestAbstract
 
         $this->storeRepository = $this->createMock(StoreRepositoryInterface::class);
 
-        $this->sut = $this->objectManager->getObject(
-            WebsiteAssignmentValidator::class, [
-                'storeRepository' => $this->storeRepository,
-            ]
-        );
+        $this->sut = new WebsiteAssignmentValidator($this->storeRepository);
     }
 
     public function testItShouldValidateWebsiteAssignment()
