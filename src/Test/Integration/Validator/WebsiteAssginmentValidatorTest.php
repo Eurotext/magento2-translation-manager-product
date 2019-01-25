@@ -11,6 +11,7 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManagerProduct\Validator\WebsiteAssignmentValidator;
+use Magento\Catalog\Api\Data\ProductExtension;
 use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Store\Api\Data\StoreInterface;
@@ -53,8 +54,12 @@ class WebsiteAssginmentValidatorTest extends IntegrationTestAbstract
         $this->storeRepository->expects($this->once())->method('getById')->with($storeId)->willReturn($store);
 
         // Product
-        $productExtension = $this->objectManager->get(ProductExtensionInterface::class);
-        $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn([$websiteId]);
+        /**
+         * There is no way to mock this since ProductExtensionInterface is generated and will not generate in this context
+         * @var ProductExtension $productExtension
+         */
+        $productExtension = $this->objectManager->create(ProductExtension::class);
+        $productExtension->setWebsiteIds([$websiteId]);
 
         /** @var ProductInterface|MockObject $product */
         $product = $this->createMock(ProductInterface::class);
@@ -94,8 +99,12 @@ class WebsiteAssginmentValidatorTest extends IntegrationTestAbstract
         $this->storeRepository->expects($this->once())->method('getById')->with($storeId)->willReturn($store);
 
         // Product
-        $productExtension = $this->objectManager->get(ProductExtensionInterface::class);
-        $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn($productWebsiteIds);
+        /**
+         * There is no way to mock this since ProductExtensionInterface is generated and will not generate in this context
+         * @var ProductExtension $productExtension
+         */
+        $productExtension = $this->objectManager->create(ProductExtension::class);
+        $productExtension->setWebsiteIds($productWebsiteIds);
 
         /** @var ProductInterface|MockObject $product */
         $product = $this->createMock(ProductInterface::class);

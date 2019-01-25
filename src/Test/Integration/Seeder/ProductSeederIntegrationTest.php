@@ -14,6 +14,8 @@ use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
 
 class ProductSeederIntegrationTest extends IntegrationTestAbstract
 {
+    protected static $storeId;
+
     /** @var \Eurotext\TranslationManagerProduct\Seeder\ProductSeeder */
     protected $sut;
 
@@ -39,6 +41,8 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
         $name = __CLASS__ . '-product-seeder';
 
         $project = $this->projectProvider->createProject($name);
+        $project->setStoreviewSrc(1);
+        $project->setStoreviewDst((int) self::$storeId);
 
         $result = $this->sut->seed($project);
 
@@ -48,5 +52,8 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
     public static function loadFixture()
     {
         include __DIR__ . '/../_fixtures/provide_products.php';
+        $store = include __DIR__ . '/../_fixtures/provide_stores.php';
+
+        self::$storeId = $store->getId();
     }
 }
