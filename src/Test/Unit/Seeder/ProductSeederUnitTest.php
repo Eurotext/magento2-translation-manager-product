@@ -15,7 +15,7 @@ use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
 use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
-use Magento\Catalog\Api\Data\ProductExtensionInterface;
+use Eurotext\TranslationManagerProduct\Validator\WebsiteAssignmentValidator;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductSearchResultsInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -44,6 +44,9 @@ class ProductSeederUnitTest extends UnitTestAbstract
     /** @var ProjectMockBuilder */
     private $projectBuilder;
 
+    /** @var WebsiteAssignmentValidator|\PHPUnit_Framework_MockObject_MockObject */
+    private $websiteAssignmentValidator;
+
     /** @var ProductSeeder */
     private $sut;
 
@@ -53,19 +56,21 @@ class ProductSeederUnitTest extends UnitTestAbstract
 
         $this->projectBuilder = new ProjectMockBuilder($this);
 
-        $this->productRepository        = $this->createMock(ProductRepositoryInterface::class);
-        $this->projectProductFactory    = $this->createMock(ProjectProductFactory::class);
-        $this->projectProductRepository = $this->createMock(ProjectProductRepositoryInterface::class);
-        $this->searchCriteriaBuilder    = $this->createMock(SearchCriteriaBuilder::class);
-        $this->logger                   = $this->createMock(LoggerInterface::class);
+        $this->productRepository          = $this->createMock(ProductRepositoryInterface::class);
+        $this->projectProductFactory      = $this->createMock(ProjectProductFactory::class);
+        $this->projectProductRepository   = $this->createMock(ProjectProductRepositoryInterface::class);
+        $this->searchCriteriaBuilder      = $this->createMock(SearchCriteriaBuilder::class);
+        $this->websiteAssignmentValidator = $this->createMock(WebsiteAssignmentValidator::class);
+        $this->logger                     = $this->createMock(LoggerInterface::class);
 
         $this->sut = $this->objectManager->getObject(
             ProductSeeder::class, [
-                'productRepository'        => $this->productRepository,
-                'projectProductFactory'    => $this->projectProductFactory,
-                'projectProductRepository' => $this->projectProductRepository,
-                'searchCriteriaBuilder'    => $this->searchCriteriaBuilder,
-                'logger'                   => $this->logger,
+                'productRepository'          => $this->productRepository,
+                'projectProductFactory'      => $this->projectProductFactory,
+                'projectProductRepository'   => $this->projectProductRepository,
+                'searchCriteriaBuilder'      => $this->searchCriteriaBuilder,
+                'websiteAssignmentValidator' => $this->websiteAssignmentValidator,
+                'logger'                     => $this->logger,
             ]
         );
     }
@@ -114,6 +119,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $project = $this->projectBuilder->buildProjectMock();
         $project->expects($this->once())->method('getId')->willReturn($projectId);
 
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator->expects($this->once())->method('validate')
+                                         ->with($project, $product)->willReturn(true);
+
         // TEST
         $result = $this->sut->seed($project);
 
@@ -157,6 +166,9 @@ class ProductSeederUnitTest extends UnitTestAbstract
         // project mock
         $project = $this->projectBuilder->buildProjectMock();
         $project->expects($this->once())->method('getId')->willReturn($projectId);
+
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator->expects($this->never())->method('validate');
 
         // TEST
         $result = $this->sut->seed($project);
@@ -208,6 +220,10 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $project = $this->projectBuilder->buildProjectMock();
         $project->expects($this->once())->method('getId')->willReturn($projectId);
 
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator->expects($this->once())->method('validate')
+                                         ->with($project, $product)->willReturn(true);
+
         // TEST
         $result = $this->sut->seed($project);
 
@@ -227,6 +243,9 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $searchResult->expects($this->never())->method('getItems');
 
         $this->productRepository->expects($this->once())->method('getList')->willReturn($searchResult);
+
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator->expects($this->never())->method('validate');
 
         $project = $this->projectBuilder->buildProjectMock();
 
@@ -297,6 +316,9 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($projectEntityResult);
         $this->projectProductRepository->expects($this->once())->method('save');
 
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator->expects($this->once())->method('validate')->willReturn(true);
+
         // New project entity
         $pProduct = $this->createMock(ProjectProductInterface::class);
         $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
@@ -317,9 +339,8 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $this->assertTrue($result);
     }
 
-    public function testItShouldValidateWebsiteAssignment()
+    public function testItShouldCatchInvalidWebsiteAssignment()
     {
-        $storeId      = 44;
         $projectId    = 33;
         $totalCount   = 1;
         $entityId     = 11;
@@ -338,13 +359,9 @@ class ProductSeederUnitTest extends UnitTestAbstract
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
 
         // Product
-        $productExtension = $this->createMock(ProductExtensionInterface::class);
-        $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn([$storeId]);
-
         $product = $this->createMock(ProductInterface::class);
         $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
         $product->expects($this->atLeastOnce())->method('getSku')->willReturn($entity);
-        $product->expects($this->once())->method('getExtensionAttributes')->willReturn($productExtension);
 
         $productResult = $this->createMock(ProductSearchResultsInterface::class);
         $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
@@ -357,22 +374,20 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $projectEntityResult->expects($this->once())->method('getTotalCount')->willReturn($pEntityCount);
 
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($projectEntityResult);
-        $this->projectProductRepository->expects($this->once())->method('save');
+        $this->projectProductRepository->expects($this->never())->method('save');
 
         // New project entity
-        $pProduct = $this->createMock(ProjectProductInterface::class);
-        $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
-        $pProduct->expects($this->once())->method('setEntityId')->with($entityId);
-        $pProduct->expects($this->once())->method('setStatus')->with(ProjectProductInterface::STATUS_NEW);
-
-        $this->projectProductFactory->expects($this->once())->method('create')->willReturn($pProduct);
+        $this->projectProductFactory->expects($this->never())->method('create');
 
         // project mock
         $project = $this->projectBuilder->buildProjectMock();
         $project->expects($this->once())->method('getId')->willReturn($projectId);
-        $project->expects($this->once())->method('getStoreviewDst')->willReturn($storeId);
 
-        $this->logger->expects($this->never())->method('error');
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator->expects($this->once())->method('validate')
+                                         ->with($project, $product)->willReturn(false);
+
+        $this->logger->expects($this->once())->method('error');
 
         // TEST
         $result = $this->sut->seed($project, $entities);
@@ -380,14 +395,8 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $this->assertTrue($result);
     }
 
-    /**
-     * @param int[] $productWebsiteIds
-     *
-     * @dataProvider provideProductWebsiteAssignments
-     */
-    public function testItShouldValidateMissingWebsiteAndLog($productWebsiteIds)
+    public function testItShouldValidateMissingWebsiteAndLog()
     {
-        $storeId      = 44;
         $projectId    = 33;
         $totalCount   = 1;
         $entityId     = 11;
@@ -406,13 +415,9 @@ class ProductSeederUnitTest extends UnitTestAbstract
                                     ->willReturnOnConsecutiveCalls(new SearchCriteria(), new SearchCriteria());
 
         // Product
-        $productExtension = $this->createMock(ProductExtensionInterface::class);
-        $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn($productWebsiteIds);
-
         $product = $this->createMock(ProductInterface::class);
         $product->expects($this->atLeastOnce())->method('getId')->willReturn($entityId);
         $product->expects($this->atLeastOnce())->method('getSku')->willReturn($entity);
-        $product->expects($this->once())->method('getExtensionAttributes')->willReturn($productExtension);
 
         $productResult = $this->createMock(ProductSearchResultsInterface::class);
         $productResult->expects($this->once())->method('getTotalCount')->willReturn($totalCount);
@@ -425,43 +430,22 @@ class ProductSeederUnitTest extends UnitTestAbstract
         $projectEntityResult->expects($this->once())->method('getTotalCount')->willReturn($pEntityCount);
 
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($projectEntityResult);
-        $this->projectProductRepository->expects($this->once())->method('save');
-
-        // New project entity
-        $pProduct = $this->createMock(ProjectProductInterface::class);
-        $pProduct->expects($this->once())->method('setProjectId')->with($projectId);
-        $pProduct->expects($this->once())->method('setEntityId')->with($entityId);
-        $pProduct->expects($this->once())->method('setStatus')->with(ProjectProductInterface::STATUS_NEW);
-
-        $this->projectProductFactory->expects($this->once())->method('create')->willReturn($pProduct);
 
         // project mock
         $project = $this->projectBuilder->buildProjectMock();
         $project->expects($this->once())->method('getId')->willReturn($projectId);
-        $project->expects($this->once())->method('getStoreviewDst')->willReturn($storeId);
 
-        $this->logger->expects($this->never())->method('error');
-        $this->logger->expects($this->once())->method('warning');
+        // Website Assignment Validator
+        $this->websiteAssignmentValidator
+            ->expects($this->once())->method('validate')
+            ->with($project, $product)->willThrowException(new \InvalidArgumentException());
+
+        $this->logger->expects($this->once())->method('error');
 
         // TEST
         $result = $this->sut->seed($project, $entities);
 
         $this->assertTrue($result);
-    }
-
-    public function provideProductWebsiteAssignments()
-    {
-        return [
-            'missing-assignment' => [
-                'productWebsiteIds' => [55],
-            ],
-            'no-websites'        => [
-                'productWebsiteIds' => [],
-            ],
-            'no-websites-array'  => [
-                'productWebsiteIds' => null,
-            ],
-        ];
     }
 
 }

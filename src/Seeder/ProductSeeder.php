@@ -14,7 +14,7 @@ use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
 use Eurotext\TranslationManagerProduct\Model\ProjectProductFactory;
 use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
-use Magento\Catalog\Api\Data\ProductExtensionInterface;
+use Eurotext\TranslationManagerProduct\Validator\WebsiteAssignmentValidator;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -50,18 +50,25 @@ class ProductSeeder implements EntitySeederInterface
      */
     private $logger;
 
+    /**
+     * @var WebsiteAssignmentValidator
+     */
+    private $websiteAssignmentValidator;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProjectProductFactory $projectProductFactory,
         ProjectProductRepositoryInterface $projectProductRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
+        WebsiteAssignmentValidator $websiteAssignmentValidator,
         LoggerInterface $logger
     ) {
-        $this->productRepository        = $productRepository;
-        $this->projectProductFactory    = $projectProductFactory;
-        $this->projectProductRepository = $projectProductRepository;
-        $this->searchCriteriaBuilder    = $searchCriteriaBuilder;
-        $this->logger                   = $logger;
+        $this->productRepository          = $productRepository;
+        $this->projectProductFactory      = $projectProductFactory;
+        $this->projectProductRepository   = $projectProductRepository;
+        $this->searchCriteriaBuilder      = $searchCriteriaBuilder;
+        $this->websiteAssignmentValidator = $websiteAssignmentValidator;
+        $this->logger                     = $logger;
     }
 
     public function seed(ProjectInterface $project, array $entities = []): bool
@@ -110,7 +117,18 @@ class ProductSeeder implements EntitySeederInterface
                 continue;
             }
 
-            $this->validateWebsiteAssignment($project, $product);
+            try {
+                $isValid = $this->websiteAssignmentValidator->validate($project, $product);
+                if (!$isValid) {
+                    $this->logger->error(
+                        sprintf('product "%s"(%d) not assigned to store/website of project', $productSku, $productId)
+                    );
+                    continue;
+                }
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+                continue;
+            }
 
             /** @var ProjectProductInterface $projectProduct */
             $projectProduct = $this->projectProductFactory->create();
@@ -136,38 +154,4 @@ class ProductSeeder implements EntitySeederInterface
         return $result;
     }
 
-    private function validateWebsiteAssignment(ProjectInterface $project, ProductInterface $product): bool
-    {
-        /** @var $product ProductInterface */
-        $productId        = (int)$product->getId();
-        $productSku       = $product->getSku();
-        $websiteIdDest    = $project->getStoreviewDst();
-        $productExtension = $product->getExtensionAttributes();
-
-        if (!$productExtension instanceof ProductExtensionInterface) {
-            $this->logger->warning(
-                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
-            );
-
-            return false;
-        }
-        $websiteIds = $productExtension->getWebsiteIds();
-        if (!is_array($websiteIds)) {
-            $this->logger->warning(
-                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
-            );
-
-            return false;
-        }
-
-        if (!in_array($websiteIdDest, $websiteIds, false)) {
-            $this->logger->warning(
-                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
-            );
-
-            return false;
-        }
-
-        return true;
-    }
 }
