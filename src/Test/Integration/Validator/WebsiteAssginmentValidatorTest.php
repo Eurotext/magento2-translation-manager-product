@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace Eurotext\TranslationManagerProduct\Test\Unit\Seeder;
 
 use Eurotext\TranslationManager\Test\Builder\ProjectMockBuilder;
-use Eurotext\TranslationManagerProduct\Test\Unit\UnitTestAbstract;
+use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManagerProduct\Validator\WebsiteAssignmentValidator;
 use Magento\Catalog\Api\Data\ProductExtensionInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -17,7 +17,7 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class WebsiteAssginmentValidatorUnitTest extends UnitTestAbstract
+class WebsiteAssginmentValidatorTest extends IntegrationTestAbstract
 {
     /** @var StoreRepositoryInterface|MockObject */
     private $storeRepository;
@@ -57,7 +57,7 @@ class WebsiteAssginmentValidatorUnitTest extends UnitTestAbstract
         $this->storeRepository->expects($this->once())->method('getById')->with($storeId)->willReturn($store);
 
         // Product
-        $productExtension = $this->createPartialMock(ProductExtensionInterface::class, ['getWebsiteIds']);
+        $productExtension = $this->objectManager->get(ProductExtensionInterface::class);
         $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn([$websiteId]);
 
         /** @var ProductInterface|MockObject $product */
@@ -98,7 +98,7 @@ class WebsiteAssginmentValidatorUnitTest extends UnitTestAbstract
         $this->storeRepository->expects($this->once())->method('getById')->with($storeId)->willReturn($store);
 
         // Product
-        $productExtension = $this->createPartialMock(ProductExtensionInterface::class, ['getWebsiteIds']);
+        $productExtension = $this->objectManager->get(ProductExtensionInterface::class);
         $productExtension->expects($this->once())->method('getWebsiteIds')->willReturn($productWebsiteIds);
 
         /** @var ProductInterface|MockObject $product */

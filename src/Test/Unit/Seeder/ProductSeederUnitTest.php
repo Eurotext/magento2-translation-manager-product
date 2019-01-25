@@ -392,7 +392,7 @@ class ProductSeederUnitTest extends UnitTestAbstract
         // TEST
         $result = $this->sut->seed($project, $entities);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     public function testItShouldValidateMissingWebsiteAndLog()
@@ -445,7 +445,7 @@ class ProductSeederUnitTest extends UnitTestAbstract
         // TEST
         $result = $this->sut->seed($project, $entities);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
 }

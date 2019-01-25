@@ -95,52 +95,14 @@ class ProductSeeder implements EntitySeederInterface
         // create project product configurations
         $products = $searchResult->getItems();
 
-        $projectId = $project->getId();
         foreach ($products as $product) {
-            /** @var $product ProductInterface */
-            $productId  = (int)$product->getId();
-            $productSku = $product->getSku();
-
             // Found entity, so remove it from not found list
-            unset($entitiesNotFound[$productSku]);
+            unset($entitiesNotFound[$product->getSku()]);
 
-            $this->searchCriteriaBuilder
-                ->addFilter(ProjectProductSchema::ENTITY_ID, $productId)
-                ->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
-            $searchCriteria = $this->searchCriteriaBuilder->create();
+            /** @var $product ProductInterface */
+            $isSeeded = $this->seedEntity($project, $product);
 
-            $searchResults = $this->projectProductRepository->getList($searchCriteria);
-
-            if ($searchResults->getTotalCount() >= 1) {
-                // product has already been added to project
-                $this->logger->info(sprintf('skipping product "%s"(%d) already added', $productSku, $productId));
-                continue;
-            }
-
-            try {
-                $isValid = $this->websiteAssignmentValidator->validate($project, $product);
-                if (!$isValid) {
-                    $this->logger->error(
-                        sprintf('product "%s"(%d) not assigned to store/website of project', $productSku, $productId)
-                    );
-                    continue;
-                }
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-                continue;
-            }
-
-            /** @var ProjectProductInterface $projectProduct */
-            $projectProduct = $this->projectProductFactory->create();
-            $projectProduct->setProjectId($projectId);
-            $projectProduct->setEntityId($productId);
-            $projectProduct->setStatus(ProjectProductInterface::STATUS_NEW);
-
-            try {
-                $this->projectProductRepository->save($projectProduct);
-            } catch (\Exception $e) {
-                $result = false;
-            }
+            $result = !$isSeeded ? false : $result;
         }
 
         // Log entites that where not found
@@ -152,6 +114,55 @@ class ProductSeeder implements EntitySeederInterface
         }
 
         return $result;
+    }
+
+    private function seedEntity(ProjectInterface $project, ProductInterface $product): bool
+    {
+        $projectId  = $project->getId();
+        $productId  = (int)$product->getId();
+        $productSku = $product->getSku();
+
+        $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::ENTITY_ID, $productId);
+        $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        $searchResults = $this->projectProductRepository->getList($searchCriteria);
+
+        if ($searchResults->getTotalCount() >= 1) {
+            // product has already been added to project
+            $this->logger->info(sprintf('skipping product "%s"(%d) already added', $productSku, $productId));
+
+            return true;
+        }
+
+        try {
+            $isValid = $this->websiteAssignmentValidator->validate($project, $product);
+            if (!$isValid) {
+                $this->logger->error(
+                    sprintf('product "%s"(%d) not assigned to store/website of project', $productSku, $productId)
+                );
+
+                return false;
+            }
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+
+            return false;
+        }
+
+        /** @var ProjectProductInterface $projectProduct */
+        $projectProduct = $this->projectProductFactory->create();
+        $projectProduct->setProjectId($projectId);
+        $projectProduct->setEntityId($productId);
+        $projectProduct->setStatus(ProjectProductInterface::STATUS_NEW);
+
+        try {
+            $this->projectProductRepository->save($projectProduct);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
 }
