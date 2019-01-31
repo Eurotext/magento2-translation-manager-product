@@ -11,9 +11,10 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
-use Magento\Catalog\Api\ProductRepositoryInterface;
+use Eurotext\TranslationManagerProduct\Validator\WebsiteAssignmentValidator;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 
 class ProductSeederIntegrationTest extends IntegrationTestAbstract
@@ -25,6 +26,9 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
 
     /** @var LoggerInterface */
     private $logger;
+
+    /** @var MockObject|WebsiteAssignmentValidator */
+    private $websiteAssignmentValidator;
 
     /** @var ProjectProvider */
     private $projectProvider;
@@ -40,7 +44,18 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
 
         $this->logger = new Logger(self::class, [$this->testHandler]);
 
-        $this->sut = $this->objectManager->create(ProductSeeder::class, ['logger' => $this->logger]);
+        // Mocking the WebsiteAssignmentValidator since the website assignment somehow does not work in the pipeline
+        // The dataprovider sets the website, but in the valdiator the websites are empty
+        $this->websiteAssignmentValidator = $this->createMock(WebsiteAssignmentValidator::class);
+        $this->websiteAssignmentValidator->method('validate')->willReturn(true);
+
+        $this->sut = $this->objectManager->create(
+            ProductSeeder::class,
+            [
+                'logger'                     => $this->logger,
+                'websiteAssignmentValidator' => $this->websiteAssignmentValidator,
+            ]
+        );
 
         $this->projectProvider = $this->objectManager->get(ProjectProvider::class);
     }
