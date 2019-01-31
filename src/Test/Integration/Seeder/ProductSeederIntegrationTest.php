@@ -65,17 +65,6 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
         $records = $this->testHandler->getRecords();
         if (count($records) > 0) {
             fwrite(STDERR, print_r($records, true));
-
-            /** @var ProductRepositoryInterface $repo */
-            $repo    = $this->objectManager->get(ProductRepositoryInterface::class);
-            $product = $repo->get('simple1');
-
-            $product->getExtensionAttributes()->setWebsiteIds([1]);
-            $repo->save($product);
-
-            $product2 = $repo->get('simple1');
-
-            fwrite(STDERR, 'WEBSITEIDS: ' . print_r($product2->getExtensionAttributes()->getWebsiteIds(), true));
         }
         $this->assertTrue($result);
     }
