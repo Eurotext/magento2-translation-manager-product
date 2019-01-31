@@ -11,6 +11,7 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
+use Magento\Store\Api\WebsiteRepositoryInterface;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -57,11 +58,21 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
         $project->setStoreviewSrc(1);
         $project->setStoreviewDst((int)self::$storeId);
 
-        $result = $this->sut->seed($project);
+        $entities = ['simple1', 'simple2', 'simple3'];
+
+        $result = $this->sut->seed($project, $entities);
 
         $records = $this->testHandler->getRecords();
         if (count($records) > 0) {
-            fwrite(STDERR, print_r($records, TRUE));
+            fwrite(STDERR, print_r($records, true));
+
+            /** @var WebsiteRepositoryInterface $websiteRepo */
+            $websiteRepo = $this->objectManager->get(WebsiteRepositoryInterface::class);
+            $websites    = $websiteRepo->getList();
+            foreach ($websites as $website) {
+                $message = $website->getId() . ' ' . $website->getName();
+                fwrite(STDERR, print_r($message, true));
+            }
         }
         $this->assertTrue($result);
     }
