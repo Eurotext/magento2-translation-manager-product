@@ -47,20 +47,29 @@ class WebsiteAssignmentValidator
 
         if (!$productExtension instanceof ProductExtensionInterface) {
             throw new \InvalidArgumentException(
-                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+                sprintf(
+                    'product "%s"(%d) not assigned to website-id: %d (extension_attributes missing)',
+                    $productSku, $productId, $websiteIdDest
+                )
             );
         }
 
         $websiteIds = $productExtension->getWebsiteIds();
         if (!is_array($websiteIds)) {
             throw new \InvalidArgumentException(
-                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+                sprintf(
+                    'product "%s"(%d) not assigned to website-id: %d (no website assignments)',
+                    $productSku, $productId, $websiteIdDest
+                )
             );
         }
 
         if (!in_array($websiteIdDest, $websiteIds, false)) {
             throw new \InvalidArgumentException(
-                sprintf('product "%s"(%d) not assigned to website-id: %d', $productSku, $productId, $websiteIdDest)
+                sprintf(
+                    'product "%s"(%d) not assigned to website-id: %d',
+                    $productSku, $productId, $websiteIdDest
+                )
             );
         }
 
