@@ -70,7 +70,12 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
             $repo    = $this->objectManager->get(ProductRepositoryInterface::class);
             $product = $repo->get('simple1');
 
-            fwrite(STDERR, print_r($product->getExtensionAttributes()->getWebsiteIds(), true));
+            $product->getExtensionAttributes()->setWebsiteIds([1]);
+            $repo->save($product);
+
+            $product2 = $repo->get('simple1');
+
+            fwrite(STDERR, 'WEBSITEIDS: ' . print_r($product2->getExtensionAttributes()->getWebsiteIds(), true));
         }
         $this->assertTrue($result);
     }
