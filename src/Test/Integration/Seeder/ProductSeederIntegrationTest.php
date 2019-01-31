@@ -11,22 +11,35 @@ namespace Eurotext\TranslationManagerProduct\Test\Integration\Seeder;
 use Eurotext\TranslationManager\Test\Integration\IntegrationTestAbstract;
 use Eurotext\TranslationManager\Test\Integration\Provider\ProjectProvider;
 use Eurotext\TranslationManagerProduct\Seeder\ProductSeeder;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class ProductSeederIntegrationTest extends IntegrationTestAbstract
 {
     protected static $storeId;
 
     /** @var \Eurotext\TranslationManagerProduct\Seeder\ProductSeeder */
-    protected $sut;
+    private $sut;
+
+    /** @var LoggerInterface */
+    private $logger;
 
     /** @var ProjectProvider */
     private $projectProvider;
+
+    /** @var TestHandler */
+    private $testHandler;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->sut = $this->objectManager->create(ProductSeeder::class);
+        $this->testHandler = new TestHandler();
+
+        $this->logger = new Logger(self::class, [$this->testHandler]);
+
+        $this->sut = $this->objectManager->create(ProductSeeder::class, ['logger' => $this->logger]);
 
         $this->projectProvider = $this->objectManager->get(ProjectProvider::class);
     }
@@ -42,10 +55,14 @@ class ProductSeederIntegrationTest extends IntegrationTestAbstract
 
         $project = $this->projectProvider->createProject($name);
         $project->setStoreviewSrc(1);
-        $project->setStoreviewDst((int) self::$storeId);
+        $project->setStoreviewDst((int)self::$storeId);
 
         $result = $this->sut->seed($project);
 
+        $records = $this->testHandler->getRecords();
+        if (count($records) > 0) {
+            fwrite(STDERR, print_r($records, TRUE));
+        }
         $this->assertTrue($result);
     }
 
