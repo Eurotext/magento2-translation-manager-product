@@ -18,7 +18,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 
-class ProjectProductDataProvider extends AbstractDataProvider
+class ProductListingDataProvider extends AbstractDataProvider
 {
     /**
      * @var RequestInterface

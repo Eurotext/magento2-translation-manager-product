@@ -25,7 +25,7 @@
             <updateUrl path="mui/index/render"/>
         </settings>
         <aclResource>Eurotext_TranslationManager::projects</aclResource>
-        <dataProvider class="Eurotext\TranslationManagerProduct\Ui\DataProvider\ProjectProductDataProvider" name="eurotext_project_product_listing_data_source">
+        <dataProvider class="Eurotext\TranslationManagerProduct\Ui\DataProvider\ProductListingDataProvider" name="eurotext_project_product_listing_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>
                 <primaryFieldName>entity_id</primaryFieldName>
