@@ -37,7 +37,6 @@
                             <item name="0" xsi:type="array">
                                 <item name="actionName" xsi:type="string">toggleModal</item>
                                 <item name="targetName" xsi:type="string">eurotext_project_form.eurotext_project_form.products.products_modal</item>
-                                <!--<item name="targetName" xsi:type="string">ns=eurotext_project_form, index=products_modal</item>-->
                             </item>
                             <item name="1" xsi:type="array">
                                 <item name="actionName" xsi:type="string">render</item>
@@ -65,7 +64,7 @@
             </argument>
             <settings>
                 <componentType>dynamicRows</componentType>
-                <dataScope>data.project</dataScope>
+                <dataScope>data</dataScope>
                 <addButton>false</addButton>
                 <defaultRecord>false</defaultRecord>
                 <recordTemplate>record</recordTemplate>
