@@ -195,7 +195,7 @@
                     </item>
                 </argument>
                 <settings>
-                    <autoRender>true</autoRender>
+                    <autoRender>false</autoRender>
                     <dataScope>eurotext_project_product_listing</dataScope>
                     <ns>eurotext_project_product_listing</ns>
                     <externalProvider>eurotext_project_product_listing.eurotext_project_product_listing_data_source</externalProvider>

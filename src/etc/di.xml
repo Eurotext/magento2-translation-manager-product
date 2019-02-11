@@ -35,6 +35,14 @@
         </arguments>
     </type>
 
+    <type name="Eurotext\TranslationManager\Ui\EntityDataLoader\EntityDataLoaderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Ui\EntityDataLoader\ProductEntityDataLoader</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Eurotext\TranslationManagerProduct\Seeder\ProductSeeder">
         <arguments>
             <!-- @todo to we want a file log per entity or use the global logger -->
