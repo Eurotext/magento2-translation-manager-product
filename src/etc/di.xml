@@ -35,7 +35,7 @@
         </arguments>
     </type>
 
-    <type name="Eurotext\TranslationManager\Ui\EntityDataLoader\EntityDataLoaderPool">
+    <type name="Eurotext\TranslationManager\Entity\EntityDataLoaderPool">
         <arguments>
             <argument name="items" xsi:type="array">
                 <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Ui\EntityDataLoader\ProductEntityDataLoader</item>
