@@ -3,7 +3,7 @@
     <preference for="Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface"
                 type="Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository" />
 
-    <type name="Eurotext\TranslationManager\Seeder\EntitySeederPool">
+    <type name="Eurotext\TranslationManager\Entity\EntitySeederPool">
         <arguments>
             <argument name="items" xsi:type="array">
                 <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Seeder\ProductSeeder</item>
@@ -11,7 +11,7 @@
         </arguments>
     </type>
 
-    <type name="Eurotext\TranslationManager\Sender\EntitySenderPool">
+    <type name="Eurotext\TranslationManager\Entity\EntitySenderPool">
         <arguments>
             <argument name="items" xsi:type="array">
                 <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Sender\ProductSender</item>
@@ -19,7 +19,7 @@
         </arguments>
     </type>
 
-    <type name="Eurotext\TranslationManager\Retriever\EntityRetrieverPool">
+    <type name="Eurotext\TranslationManager\Entity\EntityRetrieverPool">
         <arguments>
             <argument name="items" xsi:type="array">
                 <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Retriever\ProductRetriever</item>
