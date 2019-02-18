@@ -51,16 +51,15 @@
                      component="Magento_Ui/js/dynamic-rows/dynamic-rows-grid"
                      template="ui/dynamic-rows/templates/grid" sortOrder="20">
             <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
+                <item name="js_config" xsi:type="array">
                     <item name="dataProvider" xsi:type="string">eurotext_project_product_listing</item>
                     <item name="deleteButtonLabel" xsi:type="string">Remove</item>
                     <item name="map" xsi:type="array">
-                        <item name="attribute_set" xsi:type="string">attribute_set_text</item>
-                        <item name="id" xsi:type="string">entity_id</item>
+                        <item name="entity_id" xsi:type="string">entity_id</item>
                         <item name="name" xsi:type="string">name</item>
                         <item name="sku" xsi:type="string">sku</item>
-                        <item name="status" xsi:type="string">status</item>
                     </item>
+                    <item name="identificationDRProperty" xsi:type="string">entity_id</item>
                 </item>
             </argument>
             <settings>
@@ -76,6 +75,7 @@
                 <links>
                     <link name="insertData">${ $.provider }:${ $.dataProvider }</link>
                 </links>
+                <identificationProperty>entity_id</identificationProperty>
             </settings>
             <container name="record" component="Magento_Ui/js/dynamic-rows/record">
                 <argument name="data" xsi:type="array">
@@ -87,11 +87,6 @@
                     </item>
                 </argument>
                 <field name="id" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
-                    <argument name="data" xsi:type="array">
-                        <item name="config" xsi:type="array">
-                            <item name="componentType" xsi:type="string">field</item>
-                        </item>
-                    </argument>
                     <settings>
                         <label translate="true">ID</label>
                         <componentType>field</componentType>
@@ -99,12 +94,31 @@
                         <dataType>text</dataType>
                     </settings>
                 </field>
+                <field name="entity_id" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
+                    <settings>
+                        <label translate="true">Entity ID</label>
+                        <componentType>field</componentType>
+                        <dataScope>entity_id</dataScope>
+                        <dataType>text</dataType>
+                    </settings>
+                </field>
+                <field name="ext_id" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
+                    <settings>
+                        <label translate="true">Ext ID</label>
+                        <componentType>field</componentType>
+                        <dataScope>ext_id</dataScope>
+                        <dataType>text</dataType>
+                    </settings>
+                </field>
+                <field name="sku" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
+                    <settings>
+                        <label translate="true">SKU</label>
+                        <componentType>field</componentType>
+                        <dataScope>sku</dataScope>
+                        <dataType>text</dataType>
+                    </settings>
+                </field>
                 <field name="name" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
-                    <argument name="data" xsi:type="array">
-                        <item name="config" xsi:type="array">
-                            <item name="componentType" xsi:type="string">field</item>
-                        </item>
-                    </argument>
                     <settings>
                         <label translate="true">Name</label>
                         <componentType>field</componentType>
@@ -113,28 +127,19 @@
                     </settings>
                 </field>
                 <field name="position" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
-                    <argument name="data" xsi:type="array">
-                        <item name="config" xsi:type="array">
-                            <item name="componentType" xsi:type="string">field</item>
-                        </item>
-                    </argument>
                     <settings>
                         <label translate="true">Position</label>
                         <componentType>field</componentType>
                         <dataScope>position</dataScope>
-                        <dataType>text</dataType>
+                        <dataType>number</dataType>
+                        <visible>false</visible>
                     </settings>
                 </field>
-                <field name="sku" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
-                    <argument name="data" xsi:type="array">
-                        <item name="config" xsi:type="array">
-                            <item name="componentType" xsi:type="string">field</item>
-                        </item>
-                    </argument>
+                <field name="status" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
                     <settings>
-                        <label translate="true">SKU</label>
+                        <label translate="true">Status</label>
                         <componentType>field</componentType>
-                        <dataScope>sku</dataScope>
+                        <dataScope>status</dataScope>
                         <dataType>text</dataType>
                     </settings>
                 </field>
