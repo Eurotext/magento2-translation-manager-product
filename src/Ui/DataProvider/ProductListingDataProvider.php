@@ -15,6 +15,7 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Api\StoreRepositoryInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 
@@ -125,11 +126,15 @@ class ProductListingDataProvider extends AbstractDataProvider
 
         $searchResults = $this->projectProductRepository->getList($searchCriteria);
 
-        foreach ($searchResults as $projectProduct) {
+        foreach ($searchResults->getItems() as $projectProduct) {
             /** @var ProjectProductInterface $projectProduct */
-            $productId = $projectProduct->getId();
+            $productId = $projectProduct->getEntityId();
 
-            $product = $this->productRepository->getById($productId);
+            try {
+                $product = $this->productRepository->getById($productId);
+            } catch (NoSuchEntityException $e) {
+                continue;
+            }
 
             $existingRelations[] = $product->getId();
         }

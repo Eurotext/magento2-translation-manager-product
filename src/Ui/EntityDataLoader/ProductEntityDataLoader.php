@@ -11,6 +11,7 @@ namespace Eurotext\TranslationManagerProduct\Ui\EntityDataLoader;
 use Eurotext\TranslationManager\Api\EntityDataLoaderInterface;
 use Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface;
 use Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -56,17 +57,34 @@ class ProductEntityDataLoader implements EntityDataLoaderInterface
             return true;
         }
 
-        $productIds = [];
-        foreach ($projectProducts->getItems() as $projectProduct) {
-            /** @var $projectProduct ProjectProductInterface */
-            $productId = $projectProduct->getEntityId();
+        $projectProductsArray = $projectProducts->getItems();
 
-            $productIds[$productId] = $productId;
-        }
-
+        // Load Product Information
+        $productIds = array_map(
+            function (ProjectProductInterface $projectProduct) {
+                return $projectProduct->getEntityId();
+            }, $projectProductsArray
+        );
         $this->productCollection->addFieldToFilter('entity_id', ['in' => $productIds]);
+        $this->productCollection->addAttributeToSelect('name');
         $this->productCollection->load();
-        $productsArray = $this->productCollection->toArray();
+
+        $productsArray = [];
+        foreach ($projectProductsArray as $key => $projectProduct) {
+            /** @var $projectProduct ProjectProductInterface */
+            $productData = $projectProduct->toArray();
+
+            /** @var ProductInterface $product */
+            $product = $this->productCollection->getItemById($projectProduct->getEntityId());
+
+            if ($product instanceof ProductInterface) {
+                $productData['sku']  = $product->getSku();
+                $productData['name'] = $product->getName();
+            }
+            $productData['position'] = $key;
+
+            $productsArray[$key] = $productData;
+        }
 
         // use array_values to have the array start at 0
         // otherwise the dyanmicsRow Grid will fail, cause it expects the array to start at 0
