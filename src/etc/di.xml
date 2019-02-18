@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface"
-                type="Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository" />
+    <preference for="Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface" type="Eurotext\TranslationManagerProduct\Model\ProjectProduct" />
+    <preference for="Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface" type="Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository" />
 
     <type name="Eurotext\TranslationManager\Entity\EntitySeederPool">
         <arguments>
@@ -42,6 +42,15 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityDataSaverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Repository\ProductEntityDataSaver</item>
+            </argument>
+        </arguments>
+    </type>
+
 
     <type name="Eurotext\TranslationManagerProduct\Seeder\ProductSeeder">
         <arguments>
