@@ -76,6 +76,9 @@
                     <link name="insertData">${ $.provider }:${ $.dataProvider }</link>
                 </links>
                 <identificationProperty>entity_id</identificationProperty>
+                <dndConfig>
+                    <param name="enabled" xsi:type="boolean">false</param>
+                </dndConfig>
             </settings>
             <container name="record" component="Magento_Ui/js/dynamic-rows/record">
                 <argument name="data" xsi:type="array">
