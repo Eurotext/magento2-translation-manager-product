@@ -176,7 +176,7 @@
                             </item>
                         </item>
                         <item name="1" xsi:type="array">
-                            <item name="text" xsi:type="string" translate="true">Done</item>
+                            <item name="text" xsi:type="string" translate="true">Save</item>
                             <item name="class" xsi:type="string">action-primary</item>
                             <item name="actions" xsi:type="array">
                                 <item name="0" xsi:type="array">
