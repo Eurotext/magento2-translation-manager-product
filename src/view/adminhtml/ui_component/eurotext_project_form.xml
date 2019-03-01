@@ -95,6 +95,7 @@
                         <componentType>field</componentType>
                         <dataScope>id</dataScope>
                         <dataType>text</dataType>
+                        <visible>false</visible>
                     </settings>
                 </field>
                 <field name="entity_id" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
@@ -103,14 +104,7 @@
                         <componentType>field</componentType>
                         <dataScope>entity_id</dataScope>
                         <dataType>text</dataType>
-                    </settings>
-                </field>
-                <field name="ext_id" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
-                    <settings>
-                        <label translate="true">Ext ID</label>
-                        <componentType>field</componentType>
-                        <dataScope>ext_id</dataScope>
-                        <dataType>text</dataType>
+                        <visible>false</visible>
                     </settings>
                 </field>
                 <field name="sku" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
@@ -126,6 +120,14 @@
                         <label translate="true">Name</label>
                         <componentType>field</componentType>
                         <dataScope>name</dataScope>
+                        <dataType>text</dataType>
+                    </settings>
+                </field>
+                <field name="ext_id" component="Magento_Ui/js/form/element/text" template="ui/dynamic-rows/cells/text" formElement="input">
+                    <settings>
+                        <label translate="true">Ext ID</label>
+                        <componentType>field</componentType>
+                        <dataScope>ext_id</dataScope>
                         <dataType>text</dataType>
                     </settings>
                 </field>
@@ -179,7 +181,7 @@
                             </item>
                         </item>
                         <item name="1" xsi:type="array">
-                            <item name="text" xsi:type="string" translate="true">Save</item>
+                            <item name="text" xsi:type="string" translate="true">Assign</item>
                             <item name="class" xsi:type="string">action-primary</item>
                             <item name="actions" xsi:type="array">
                                 <item name="0" xsi:type="array">
