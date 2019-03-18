@@ -26,7 +26,7 @@ class ProductScopeConfigReader
 
     public function getAttributesEnabled(): array
     {
-        $data = $this->scopeConfig->getValue(self::CONFIG_PATH_ATTRIBUTES_ENABLED);
+        $data = (string)$this->scopeConfig->getValue(self::CONFIG_PATH_ATTRIBUTES_ENABLED);
 
         return explode(',', $data);
     }
