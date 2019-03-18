@@ -18,7 +18,7 @@ use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
 use Eurotext\TranslationManagerProduct\Sender\ProductSender;
 use Eurotext\TranslationManagerProduct\Test\Integration\Provider\ProjectProductProvider;
 
-class ProductSenderIntegrationTest extends IntegrationTestAbstract
+class ProductSenderTest extends IntegrationTestAbstract
 {
     /** @var ProjectProductRepository */
     private $projectProductRepository;

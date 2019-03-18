@@ -23,7 +23,7 @@ use Eurotext\TranslationManagerProduct\Test\Integration\Provider\ProjectProductP
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 
-class ProductRetrieverIntegrationTest extends IntegrationTestAbstract
+class ProductRetrieverTest extends IntegrationTestAbstract
 {
     /** @var ProjectProductRepository */
     private $projectProductRepository;

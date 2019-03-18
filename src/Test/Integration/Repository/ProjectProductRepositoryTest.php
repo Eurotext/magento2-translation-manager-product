@@ -14,7 +14,7 @@ use Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository;
 use Eurotext\TranslationManagerProduct\Test\Integration\Provider\ProjectProductProvider;
 use Magento\Framework\Exception\NoSuchEntityException;
 
-class ProjectProductRepositoryIntegrationTest extends IntegrationTestAbstract
+class ProjectProductRepositoryTest extends IntegrationTestAbstract
 {
     /** @var ProjectProductRepository */
     protected $sut;

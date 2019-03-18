@@ -17,7 +17,7 @@ use Monolog\Logger;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 
-class ProductSeederIntegrationTest extends IntegrationTestAbstract
+class ProductSeederTest extends IntegrationTestAbstract
 {
     protected static $storeId;
 
