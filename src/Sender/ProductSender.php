@@ -108,7 +108,7 @@ class ProductSender implements EntitySenderInterface
         $productId = $projectProduct->getEntityId();
 
         try {
-            $product = $this->productRepository->get($productId);
+            $product = $this->productRepository->getById($productId);
         } catch (NoSuchEntityException $e) {
             $message = $e->getMessage();
             $this->logger->error(sprintf('product %s => %s', $productId, $message));
