@@ -99,7 +99,7 @@ class ProductSenderUnitTest extends UnitTestAbstract
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($searchResult);
 
         $product = $this->createMock(ProductInterface::class);
-        $this->productRepository->expects($this->once())->method('get')
+        $this->productRepository->expects($this->once())->method('getById')
                                  ->with($productId)->willReturn($product);
 
         $itemRequest = $this->createMock(ItemPostRequest::class);
@@ -135,7 +135,7 @@ class ProductSenderUnitTest extends UnitTestAbstract
         $searchResult->expects($this->once())->method('getItems')->willReturn($searchResultItems);
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($searchResult);
 
-        $this->productRepository->expects($this->never())->method('get');
+        $this->productRepository->expects($this->never())->method('getById');
         $this->productItemPostMapper->expects($this->never())->method('map');
         $this->itemApi->expects($this->never())->method('post');
         $this->projectProductRepository->expects($this->never())->method('save');
@@ -166,7 +166,7 @@ class ProductSenderUnitTest extends UnitTestAbstract
         $searchResult->expects($this->once())->method('getItems')->willReturn($searchResultItems);
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($searchResult);
 
-        $this->productRepository->expects($this->once())->method('get')
+        $this->productRepository->expects($this->once())->method('getById')
                                  ->with($productId)
                                  ->willThrowException(new NoSuchEntityException());
 
@@ -204,7 +204,7 @@ class ProductSenderUnitTest extends UnitTestAbstract
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($searchResult);
 
         $product = $this->createMock(ProductInterface::class);
-        $this->productRepository->expects($this->once())->method('get')
+        $this->productRepository->expects($this->once())->method('getById')
                                  ->with($productId)
                                  ->willReturn($product);
 
@@ -248,7 +248,7 @@ class ProductSenderUnitTest extends UnitTestAbstract
         $this->projectProductRepository->expects($this->once())->method('getList')->willReturn($searchResult);
 
         $product = $this->createMock(ProductInterface::class);
-        $this->productRepository->expects($this->once())->method('get')
+        $this->productRepository->expects($this->once())->method('getById')
                                  ->with($productId)
                                  ->willReturn($product);
 
