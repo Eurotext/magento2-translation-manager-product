@@ -18,6 +18,7 @@ use Eurotext\TranslationManagerProduct\Setup\ProjectProductSchema;
 use GuzzleHttp\Exception\GuzzleException;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Psr\Log\LoggerInterface;
 
 class ProductSender implements EntitySenderInterface
@@ -61,11 +62,11 @@ class ProductSender implements EntitySenderInterface
         LoggerInterface $logger
     ) {
         $this->projectProductRepository = $projectProductRepository;
-        $this->searchCriteriaBuilder    = $searchCriteriaBuilder;
-        $this->itemApi                  = $itemApi;
-        $this->productRepository        = $productRepository;
-        $this->itemPostMapper           = $itemPostMapper;
-        $this->logger                   = $logger;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->itemApi = $itemApi;
+        $this->productRepository = $productRepository;
+        $this->itemPostMapper = $itemPostMapper;
+        $this->logger = $logger;
     }
 
     public function send(ProjectInterface $project): bool
@@ -74,7 +75,7 @@ class ProductSender implements EntitySenderInterface
 
         $projectId = $project->getId();
 
-        $this->logger->info(sprintf('send project products project-id:%d', $projectId));
+        $this->logger->info(sprintf('send project categories project-id:%d', $projectId));
 
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::PROJECT_ID, $projectId);
         $this->searchCriteriaBuilder->addFilter(ProjectProductSchema::EXT_ID, 0);
@@ -83,43 +84,59 @@ class ProductSender implements EntitySenderInterface
 
         $searchResult = $this->projectProductRepository->getList($searchCriteria);
 
+        /** @var $projectProducts ProjectProductInterface[] */
         $projectProducts = $searchResult->getItems();
 
         foreach ($projectProducts as $projectProduct) {
-            /** @var $projectProduct ProjectProductInterface */
+            $isEntitySent = $this->sendEntity($project, $projectProduct);
 
-            // Skip already transferred products
-            if ($projectProduct->getExtId() > 0) {
-                continue;
-            }
+            $result = $isEntitySent ? $result : false;
+        }
 
-            $productId = $projectProduct->getEntityId();
+        return $result;
+    }
 
-            $product = $this->productRepository->getById($productId);
+    private function sendEntity(ProjectInterface $project, ProjectProductInterface $projectProduct): bool
+    {
+        $result = true;
 
-            $itemRequest = $this->itemPostMapper->map($product, $project);
+        // Skip already transferred products
+        if ($projectProduct->getExtId() > 0) {
+            return true;
+        }
 
-            try {
-                $response = $this->itemApi->post($itemRequest);
+        $productId = $projectProduct->getEntityId();
 
-                // save project_product ext_id
-                $extId = $response->getId();
-                $projectProduct->setExtId($extId);
-                $projectProduct->setStatus(ProjectProductInterface::STATUS_EXPORTED);
+        try {
+            $product = $this->productRepository->get($productId);
+        } catch (NoSuchEntityException $e) {
+            $message = $e->getMessage();
+            $this->logger->error(sprintf('product %s => %s', $productId, $message));
 
-                $this->projectProductRepository->save($projectProduct);
+            return false;
+        }
 
-                $this->logger->info(sprintf('product id:%d, ext-id:%s => success', $productId, $extId));
-            } catch (GuzzleException $e) {
-                $message = $e->getMessage();
-                $this->logger->error(sprintf('product id:%d => %s', $productId, $message));
-                $result = false;
-            } catch (\Exception $e) {
-                $message = $e->getMessage();
-                $this->logger->error(sprintf('product id:%d => %s', $productId, $message));
-                $result = false;
-            }
+        $itemRequest = $this->itemPostMapper->map($product, $project);
 
+        try {
+            $response = $this->itemApi->post($itemRequest);
+
+            // save project_product ext_id
+            $extId = $response->getId();
+            $projectProduct->setExtId($extId);
+            $projectProduct->setStatus(ProjectProductInterface::STATUS_EXPORTED);
+
+            $this->projectProductRepository->save($projectProduct);
+
+            $this->logger->info(sprintf('product %s, ext-id:%s => success', $productId, $extId));
+        } catch (GuzzleException $e) {
+            $message = $e->getMessage();
+            $this->logger->error(sprintf('product %s => %s', $productId, $message));
+            $result = false;
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $this->logger->error(sprintf('product %s => %s', $productId, $message));
+            $result = false;
         }
 
         return $result;
