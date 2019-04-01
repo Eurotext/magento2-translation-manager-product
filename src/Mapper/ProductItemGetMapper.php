@@ -11,6 +11,7 @@ namespace Eurotext\TranslationManagerProduct\Mapper;
 use Eurotext\RestApiClient\Response\Project\ItemGetResponse;
 use Eurotext\TranslationManagerProduct\ScopeConfig\ProductScopeConfigReader;
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Product;
 
 class ProductItemGetMapper
 {
@@ -48,6 +49,14 @@ class ProductItemGetMapper
             }
 
             $customAttribute->setValue($newValue);
+        }
+
+        // Unset UrlKey so it gets generated automatically
+        /** @var $product Product */
+        $product->setUrlKey('');
+        $urlKeyAttribute = $product->getCustomAttribute('url_key');
+        if ($urlKeyAttribute !== null) {
+            $urlKeyAttribute->setValue(null);
         }
 
         return $product;
