@@ -36,13 +36,13 @@ class ProductEntityDataSaver implements EntityDataSaverInterface
     public function save(ProjectInterface $project, array &$data): bool
     {
         if (!array_key_exists('products', $data)) {
-            throw new \InvalidArgumentException('entities data not found');
+            return true;
         }
 
         $entities = $data['products'];
 
         if (count($entities) === 0) {
-            throw new \InvalidArgumentException('entities not found');
+            return true;
         }
 
         $skus      = [];

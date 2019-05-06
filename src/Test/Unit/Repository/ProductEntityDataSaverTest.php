@@ -69,22 +69,20 @@ class ProductEntityDataSaverTest extends UnitTestAbstract
         $this->assertTrue($save);
     }
 
-    public function testItShouldThrowExceptionIfProductsAreMissing()
+    public function testItShouldReturnIfProductsAreMissing()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $data = [];
 
         $project = $this->createMock(ProjectInterface::class);
         /** @var ProjectInterface $project */
 
-        $this->sut->save($project, $data);
+        $result = $this->sut->save($project, $data);
+
+        $this->assertTrue($result);
     }
 
-    public function testItShouldThrowExceptionIfProductsAreEmpty()
+    public function testItShouldReturnIfProductsAreEmpty()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
         $data = [
             'products' => [],
         ];
@@ -92,7 +90,9 @@ class ProductEntityDataSaverTest extends UnitTestAbstract
         $project = $this->createMock(ProjectInterface::class);
         /** @var ProjectInterface $project */
 
-        $this->sut->save($project, $data);
+        $result = $this->sut->save($project, $data);
+
+        $this->assertTrue($result);
     }
 
 }
