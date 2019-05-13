@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Eurotext\TranslationManagerProduct\Api\Data\ProjectProductInterface" type="Eurotext\TranslationManagerProduct\Model\ProjectProduct" />
+    <preference for="Eurotext\TranslationManagerProduct\Api\ProjectProductRepositoryInterface" type="Eurotext\TranslationManagerProduct\Repository\ProjectProductRepository" />
+
+    <type name="Eurotext\TranslationManager\Entity\EntitySeederPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Seeder\ProductSeeder</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntitySenderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Sender\ProductSender</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityRetrieverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Retriever\ProductRetriever</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityTypePool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Entity\ProductEntityType</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityDataLoaderPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Ui\EntityDataLoader\ProductEntityDataLoader</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManager\Entity\EntityDataSaverPool">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="product" xsi:type="object">Eurotext\TranslationManagerProduct\Repository\ProductEntityDataSaver</item>
+            </argument>
+        </arguments>
+    </type>
+
+
+    <type name="Eurotext\TranslationManagerProduct\Seeder\ProductSeeder">
+        <arguments>
+            <!-- @todo to we want a file log per entity or use the global logger -->
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManagerProduct\Sender\ProductSender">
+        <arguments>
+            <!-- @todo to we want a file log per entity or use the global logger -->
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Eurotext\TranslationManagerProduct\Retriever\ProductRetriever">
+        <arguments>
+            <!-- @todo to we want a file log per entity or use the global logger -->
+            <argument name="logger" xsi:type="object">Eurotext\TranslationManager\Logger\ApiLogger</argument>
+        </arguments>
+    </type>
+
+</config>
