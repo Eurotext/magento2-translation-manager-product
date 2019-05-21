@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "~7.0.0|~7.1.0|~7.2.0",
-        "eurotext/rest-api-client": "^1.0.0"
+        "eurotext/magento2-translation-manager": "^1.0.1"
     },
     "autoload": {
         "files": [
