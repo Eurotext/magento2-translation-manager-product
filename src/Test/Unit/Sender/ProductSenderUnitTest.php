@@ -49,7 +49,7 @@ class ProductSenderUnitTest extends UnitTestAbstract
     /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $logger;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

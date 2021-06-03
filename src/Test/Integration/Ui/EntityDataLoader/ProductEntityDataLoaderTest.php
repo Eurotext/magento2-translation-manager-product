@@ -24,7 +24,7 @@ class ProductEntityDataLoaderTest extends IntegrationTestAbstract
     /** @var ProjectProvider */
     private $projectProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

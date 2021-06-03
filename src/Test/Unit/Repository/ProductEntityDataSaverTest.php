@@ -26,7 +26,7 @@ class ProductEntityDataSaverTest extends UnitTestAbstract
     /** @var ProductSeeder|MockObject */
     private $entitySeeder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

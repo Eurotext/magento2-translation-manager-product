@@ -33,7 +33,7 @@ class CleanProductsServiceTest extends UnitTestAbstract
     /** @var CleanProductsService */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
