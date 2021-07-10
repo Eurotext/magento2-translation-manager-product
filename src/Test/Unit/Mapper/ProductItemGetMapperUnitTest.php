@@ -20,7 +20,7 @@ class ProductItemGetMapperUnitTest extends UnitTestAbstract
     /** @var ProductItemGetMapper */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

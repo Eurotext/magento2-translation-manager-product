@@ -36,7 +36,7 @@ class ProductSeederTest extends IntegrationTestAbstract
     /** @var TestHandler */
     private $testHandler;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
